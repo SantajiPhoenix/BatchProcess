@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
-import nl.yestelecom.phoenix.batch.writer.csv.CsvWriterType;
+import nl.yestelecom.phoenix.batch.writer.csv.CsvWriter;
 
 @Service
-public class MarketPointsCSVWriter implements CsvWriterType {
+public class MarketPointsCSVWriter implements CsvWriter {
 
 	@Value("${mail.file.directory}")
 	private String fileDirecotry;

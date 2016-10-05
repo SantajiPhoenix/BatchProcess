@@ -6,18 +6,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
-import nl.yestelecom.phoenix.batch.writer.csv.CsvWriterType;
+import nl.yestelecom.phoenix.batch.writer.csv.CsvWriter;
 
 @Service
 //public class CreditControlCSVWriter extends CsvWriterType {
-public class CreditControlCSVWriter implements CsvWriterType {
+public class CreditControlCSVWriter implements CsvWriter {
 	
 
 	@Value("${creditControl.fileName}")
 	private String fileName;
 	@Value("${creditControl.filePath}")
 	private String filePath;
-	@Value("${creditControl.header}")
+	@Value("${creditControl.csv.header}")
 	private String header;
 
 	List<String> rows;

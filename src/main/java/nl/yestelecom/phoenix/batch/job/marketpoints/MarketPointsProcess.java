@@ -129,4 +129,10 @@ public class MarketPointsProcess implements JobProcessor {
 
 	}
 
+	@Override
+	public void send() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

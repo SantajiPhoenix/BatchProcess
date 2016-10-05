@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
+import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
@@ -17,6 +18,12 @@ public class CreditControlProcess implements JobProcessor {
 
 	@Autowired
 	WriteVisitor writerVisitorImpl;
+
+	@Autowired
+	SenderVisitor senderVisitor;
+
+	@Autowired
+	CreditControlFTPSender creditControlFTPSender;
 
 	@Autowired
 	CreditControlRepository creditControlRepository;
@@ -42,11 +49,7 @@ public class CreditControlProcess implements JobProcessor {
 	}
 
 	public void send() {
-
+		creditControlFTPSender.accept(senderVisitor);
 	}
-
-	// public void send() {
-	// creditControlFTPConfig.sendContent();
-	// }
 
 }

@@ -6,7 +6,7 @@ public interface JobProcessor {
 		read();
 		process();
 		write();
-		// send();
+		send();
 	}
 
 	public void read();
@@ -15,6 +15,6 @@ public interface JobProcessor {
 
 	public void write();
 	
-	// public void send();
+	public void send();
 
 }
