@@ -1,12 +1,12 @@
 package nl.yestelecom.phoenix.batch.job.creditcontrol;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.sender.ftp.FTPSender;
 
-@Configuration
+@Service
 public class CreditControlFTPSender implements FTPSender {
 
 	@Value("${creditcontrol.ftp.host}")
@@ -17,13 +17,13 @@ public class CreditControlFTPSender implements FTPSender {
 	private String username;
 	@Value("${creditcontrol.ftp.password}")
 	private String password;
-	@Value("${creditcontrol.ftp.privatekey}")
+	@Value("${creditcontrol.ftp.privateKey}")
 	private String privateKey;
 	@Value("${creditcontrol.fileName}")
 	private String fileName;
 	@Value("${creditcontrol.filePath}")
 	private String filePath;
-	@Value("${creditcontrol.ftp.remotedirectory}")
+	@Value("${creditcontrol.ftp.remoteDirectory}")
 	private String remoteDirectory;
 
 	public String getSftpHost() {

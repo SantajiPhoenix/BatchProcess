@@ -13,11 +13,11 @@ import nl.yestelecom.phoenix.batch.writer.csv.CsvWriter;
 public class CreditControlCSVWriter implements CsvWriter {
 	
 
-	@Value("${creditControl.fileName}")
+	@Value("${creditcontrol.fileName}")
 	private String fileName;
-	@Value("${creditControl.filePath}")
+	@Value("${creditcontrol.filePath}")
 	private String filePath;
-	@Value("${creditControl.csv.header}")
+	@Value("${creditcontrol.csv.header}")
 	private String header;
 
 	List<String> rows;
