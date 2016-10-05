@@ -24,7 +24,7 @@ public class CsvWriterUtil {
 	public void writeCSVData() {
 		CSVWriter writer;
 		try {
-			writer = new CSVWriter(new FileWriter(fileName), delimiter);
+			writer = new CSVWriter(new FileWriter(filePath+fileName), delimiter);
 			String[] head = header.split(",");
 			writer.writeNext(head);
 			for (String val : rowValue) {
