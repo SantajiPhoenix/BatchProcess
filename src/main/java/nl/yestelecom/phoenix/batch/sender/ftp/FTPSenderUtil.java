@@ -35,11 +35,12 @@ public class FTPSenderUtil {
 		}
 	}
 
-	public void setSession(String userName, String password, int port) {
+	public void setSession(String userName, String host, int port, String password) {
 		try {
-			session = jSch.getSession(userName, password, port);
-			// if (password != null && !password.isEmpty()) {
-			session.setPassword(password);
+			session = jSch.getSession(userName, host, port);
+			if (password != null && !password.isEmpty()) {
+				session.setPassword(password);
+			}
 		} catch (JSchException e) {
 			e.printStackTrace();
 		}
@@ -66,8 +67,8 @@ public class FTPSenderUtil {
 		try {
 			channelSftp = (ChannelSftp) channel;
 			channelSftp.cd(remoteDirectory);
-			File f = new File(fileName);
-			channelSftp.put(new FileInputStream(f), f.getName());			
+			File f = new File(filePath + fileName);
+			channelSftp.put(new FileInputStream(f), f.getName());
 		} catch (SftpException | FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {

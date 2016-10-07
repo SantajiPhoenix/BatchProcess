@@ -18,4 +18,5 @@ public class BgProcessApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BgProcessApplication.class, args);
 	}
+
 }

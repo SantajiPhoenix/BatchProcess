@@ -3,10 +3,6 @@ package nl.yestelecom.phoenix.batch.sender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
-
 import nl.yestelecom.phoenix.batch.sender.email.EmailSender;
 import nl.yestelecom.phoenix.batch.sender.ftp.FTPSender;
 import nl.yestelecom.phoenix.batch.sender.ftp.FTPSenderUtil;
@@ -21,7 +17,7 @@ public class SenderVisitorImpl implements SenderVisitor {
 		if (ftp.getPrivateKey() != null && !ftp.getPrivateKey().isEmpty()) {
 			ftpSenderUtil.addIdentity(ftp.getPrivateKey());
 		}
-		ftpSenderUtil.setSession(ftp.getUsername(), ftp.getPassword(), ftp.getSftpPort());
+		ftpSenderUtil.setSession(ftp.getUsername(), ftp.getSftpHost(), ftp.getSftpPort(), ftp.getPassword());
 		ftpSenderUtil.setChannel();
 		ftpSenderUtil.connect();
 		ftpSenderUtil.transferFile(ftp.getFileName(), ftp.getFilePath(), ftp.getRemoteDirectory());

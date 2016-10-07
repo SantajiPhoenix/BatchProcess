@@ -20,6 +20,4 @@ public interface FTPSender extends Sender {
 
 	public String getFilePath();
 
-	// public void accept(SenderVisitor visitor);
-
 }
