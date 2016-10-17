@@ -6,11 +6,15 @@ import org.springframework.stereotype.Service;
 import nl.yestelecom.phoenix.batch.sender.email.EmailSender;
 import nl.yestelecom.phoenix.batch.sender.ftp.FTPSender;
 import nl.yestelecom.phoenix.batch.sender.ftp.FTPSenderUtil;
+import nl.yestelecom.phoenix.batch.sender.mail.MailSenderUtil;
 
 @Service
 public class SenderVisitorImpl implements SenderVisitor {
 	@Autowired
 	FTPSenderUtil ftpSenderUtil;
+	
+	@Autowired
+	MailSenderUtil mailSenderUtil;
 
 	@Override
 	public void sendContent(FTPSender ftp) {
@@ -25,8 +29,12 @@ public class SenderVisitorImpl implements SenderVisitor {
 
 	@Override
 	public void sendContent(EmailSender email) {
-		// TODO Auto-generated method stub
-
+		try{
+			mailSenderUtil.sendMail(email.getEmailTo(), email.getEmailFrom(), email.getFilePath(), email.getSubject(), email.getText());
+		}catch(Exception e){
+			System.out.println(e);
+		}
+		
 	}
 
 }
