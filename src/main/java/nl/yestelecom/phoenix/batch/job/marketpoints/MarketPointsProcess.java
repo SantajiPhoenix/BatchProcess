@@ -8,10 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
+import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
+import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
 import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPoints;
 import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPointsTotal;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsRepository;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsTotalRepository;
+import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
@@ -32,6 +35,15 @@ public class MarketPointsProcess implements JobProcessor {
 
 	@Autowired
 	WriteVisitor writerVisitorImpl;
+	
+	@Autowired
+	MarketPointsEmailSender marketPointsEmailSender;
+	
+	@Autowired
+	SenderVisitor senderVisitor;
+	
+	@Autowired
+	EmailDetailsRepo emailDetailsRepo;
 
 	@Value("${marketpoints.incentive1}")
 	private String incentive1FileName;
@@ -74,6 +86,7 @@ public class MarketPointsProcess implements JobProcessor {
 	List<String> marketPointsInc2TotaalToWrite;
 	List<String> marketPointsInc1and2ToWrite;
 	List<String> marketPointsInc1and2TotaalToWrite;
+	EmailDetails emailDetails;
 
 	@Override
 	public void read() {
@@ -83,6 +96,7 @@ public class MarketPointsProcess implements JobProcessor {
 		marketPointsInc2Totaal = marketingPointsTotalRepository.getViewPointsTotal(new Long(2));
 		marketPointsInc1and2 = marketPointsRepository.getViewPointsPerContractMerged();
 		marketPointsInc1and2Totaal = marketingPointsTotalRepository.getMergedViewPointsTotal();
+		emailDetails = emailDetailsRepo.getEmailDetailsForJob("MARKET_POINTS");
 
 	}
 
@@ -132,6 +146,8 @@ public class MarketPointsProcess implements JobProcessor {
 	@Override
 	public void send() {
 		// TODO Auto-generated method stub
+		marketPointsEmailSender.setEmailDetails(emailDetails);
+		marketPointsEmailSender.accept(senderVisitor);
 		
 	}
 
