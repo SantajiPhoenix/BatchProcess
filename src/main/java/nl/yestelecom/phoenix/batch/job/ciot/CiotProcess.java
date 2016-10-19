@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
+import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
+import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -26,15 +28,22 @@ public class CiotProcess implements JobProcessor {
 	private CiotFTPSender ciotFTPSender;
 	@Autowired
 	private SenderVisitor senderVisitor;
+	@Autowired
+	private CiotEmailSender ciotEmailSender;
+	
+	@Autowired
+	EmailDetailsRepo emailDetailsRepo;
 
 	private List<Ciot> ciotData;
 	private String sequence;
 	private Map<String, Object> xmlData = new HashMap<>();
+	EmailDetails emailDetails;
 
 	@Override
 	public void read() {
 		ciotData = ciotRepo.findAll();
 		sequence = ciotRepo.generateFileSequence();
+		emailDetails= emailDetailsRepo.getEmailDetailsForJob("CIOT");
 	}
 
 	@Override
@@ -52,8 +61,12 @@ public class CiotProcess implements JobProcessor {
 
 	@Override
 	public void send() {
+		ciotEmailSender.setEmailDetails(emailDetails);
+		ciotEmailSender.accept(senderVisitor);
+		
 		ciotFTPSender.setSequence(sequence);
 		ciotFTPSender.accept(senderVisitor);
+		
 	}
 
 }
