@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
@@ -15,6 +16,7 @@ import nl.yestelecom.phoenix.batch.job.simoverview.model.SimOverview;
 import nl.yestelecom.phoenix.batch.job.simoverview.model.SimTypeCount;
 import nl.yestelecom.phoenix.batch.job.simoverview.repo.DealerHeadQuartersRepository;
 import nl.yestelecom.phoenix.batch.job.simoverview.repo.SimTypeCountRepository;
+import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreator;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -44,9 +46,14 @@ public class SimOverviewProcess implements JobProcessor{
 	
 	@Autowired
 	EmailDetailsRepo emailDetailsRepo;
+	@Autowired
+	ArchiveFileCreator archiveFileCreator;
 	
 	@Autowired
 	SenderVisitor senderVisitor;
+	
+	@Value("${simoverview.filepath}")
+	private String fileDirecotry;
 	
 	List<SimTypeCount> simTypeCount ;
 	List<DealerHeadQuarters> dealerHQ;
@@ -54,6 +61,7 @@ public class SimOverviewProcess implements JobProcessor{
 	List<Object[]> busPartnerList;
 	List<SimOverview> simOvewviewDataList;
 	EmailDetails emailDetails;
+	
 	@Override
 	public void read() {
 		/*simTypeCount = simTypeCountRepository.getTypeCount();
@@ -68,7 +76,7 @@ public class SimOverviewProcess implements JobProcessor{
 		dealerHQ  = dealerHeadQuartersRepository.getDealersandMainDealers();
 		System.out.println("size is >> "+dealerHQ.get(0).getDlrId()+" >> "+dealerHQ.get(0).getDealerName());
 		
-		emailDetails = emailDetailsRepo.getEmailDetailsForJob("SIM_OVERVIEW");
+		emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
 		
 	}
 
@@ -155,6 +163,20 @@ public class SimOverviewProcess implements JobProcessor{
 	public void send() {
 		simOverviewEmailSender.setEmailDetails(emailDetails);
 		simOverviewEmailSender.accept(senderVisitor);
+		
+	}
+
+	@Override
+	public void postProcess() {
+		archiveFileCreator.createArchiveFile(fileDirecotry);
+		
+	}
+
+	@Override
+	public String getJobName() {
+		String jobName = "SIM_OVERVIEW";
+		return jobName;
+		// TODO Auto-generated method stub
 		
 	}
 
