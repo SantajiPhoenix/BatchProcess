@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
+import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreator;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -30,9 +32,14 @@ public class CiotProcess implements JobProcessor {
 	private SenderVisitor senderVisitor;
 	@Autowired
 	private CiotEmailSender ciotEmailSender;
+	@Autowired
+	ArchiveFileCreator archiveFileCreator;
 	
 	@Autowired
 	EmailDetailsRepo emailDetailsRepo;
+	
+	@Value("${ciot.filePath}")
+	private String fileDirecotry;
 
 	private List<Ciot> ciotData;
 	private String sequence;
@@ -43,7 +50,7 @@ public class CiotProcess implements JobProcessor {
 	public void read() {
 		ciotData = ciotRepo.findAll();
 		sequence = ciotRepo.generateFileSequence();
-		emailDetails= emailDetailsRepo.getEmailDetailsForJob("CIOT");
+		emailDetails= emailDetailsRepo.getEmailDetailsForJob(getJobName());
 	}
 
 	@Override
@@ -66,6 +73,19 @@ public class CiotProcess implements JobProcessor {
 		
 		ciotFTPSender.setSequence(sequence);
 		ciotFTPSender.accept(senderVisitor);
+		
+	}
+
+	@Override
+	public void postProcess() {
+		archiveFileCreator.createArchiveFile(fileDirecotry);
+		
+	}
+
+	@Override
+	public String getJobName() {
+		String jobName = "CIOT";
+		return jobName;
 		
 	}
 
