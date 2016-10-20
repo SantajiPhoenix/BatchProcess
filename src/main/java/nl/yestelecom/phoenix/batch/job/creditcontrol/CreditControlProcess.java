@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
+import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreator;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -35,6 +37,12 @@ public class CreditControlProcess implements JobProcessor {
 	
 	@Autowired
 	EmailDetailsRepo emailDetailsRepo;
+	
+	@Autowired
+	ArchiveFileCreator archiveFileCreator;
+	
+	@Value("${creditcontrol.filePath}")
+	private String fileDirecotry;
 
 	List<CreditControl> creditControl;
 
@@ -43,7 +51,7 @@ public class CreditControlProcess implements JobProcessor {
 
 	public void read() {
 		creditControl = creditControlRepository.findAll();
-		emailDetails = emailDetailsRepo.getEmailDetailsForJob("CREDIT_CONTROL");
+		emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
 	}
 
 	public void process() {
@@ -62,6 +70,20 @@ public class CreditControlProcess implements JobProcessor {
 		creditControlEmailSender.setEmailDetails(emailDetails);
 		creditControlEmailSender.accept(senderVisitor);
 		creditControlFTPSender.accept(senderVisitor);
+	}
+
+	@Override
+	public void postProcess() {
+		archiveFileCreator.createArchiveFile(fileDirecotry);
+		
+	}
+
+	@Override
+	public String getJobName() {
+		String jobName = "CREDIT_CONTROL";
+		return jobName;
+		// TODO Auto-generated method stub
+		
 	}
 
 }
