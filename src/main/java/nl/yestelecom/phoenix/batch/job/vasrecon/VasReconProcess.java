@@ -128,4 +128,16 @@ public class VasReconProcess implements JobProcessor{
 		
 	}
 
+	@Override
+	public void postProcess() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getJobName() {
+		return null;
+		
+	}
+
 }
