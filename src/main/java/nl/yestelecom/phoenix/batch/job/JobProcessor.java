@@ -7,6 +7,7 @@ public interface JobProcessor {
 		process();
 		write();
 		send();
+		postProcess();
 	}
 
 	public void read();
@@ -16,5 +17,9 @@ public interface JobProcessor {
 	public void write();
 	
 	public void send();
+	
+	public void postProcess();
+	
+	public String getJobName();
 
 }
