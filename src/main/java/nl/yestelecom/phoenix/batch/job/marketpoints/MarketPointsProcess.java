@@ -14,6 +14,7 @@ import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPoints;
 import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPointsTotal;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsRepository;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsTotalRepository;
+import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreator;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -41,6 +42,9 @@ public class MarketPointsProcess implements JobProcessor {
 	
 	@Autowired
 	SenderVisitor senderVisitor;
+	
+	@Autowired
+	ArchiveFileCreator archiveFileCreator;
 	
 	@Autowired
 	EmailDetailsRepo emailDetailsRepo;
@@ -96,7 +100,7 @@ public class MarketPointsProcess implements JobProcessor {
 		marketPointsInc2Totaal = marketingPointsTotalRepository.getViewPointsTotal(new Long(2));
 		marketPointsInc1and2 = marketPointsRepository.getViewPointsPerContractMerged();
 		marketPointsInc1and2Totaal = marketingPointsTotalRepository.getMergedViewPointsTotal();
-		emailDetails = emailDetailsRepo.getEmailDetailsForJob("MARKET_POINTS");
+		emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
 
 	}
 
@@ -149,6 +153,18 @@ public class MarketPointsProcess implements JobProcessor {
 		marketPointsEmailSender.setEmailDetails(emailDetails);
 		marketPointsEmailSender.accept(senderVisitor);
 		
+		
+	}
+	
+	@Override
+	public void postProcess(){
+		archiveFileCreator.createArchiveFile(fileDirecotry);
+	}
+
+	@Override
+	public String getJobName() {
+		String jobName = "MARKET_POINTS";
+		return jobName;
 	}
 
 }
