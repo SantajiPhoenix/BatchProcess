@@ -2,6 +2,8 @@ package nl.yestelecom.phoenix.batch.job.marketpoints;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,8 @@ import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 @Service
 @Configuration
 public class MarketPointsProcess implements JobProcessor {
+	
+	private static Logger logger = LoggerFactory.getLogger(MarketPointsProcess.class);
 
 	@Autowired
 	MarketPointsRepository marketPointsRepository;
@@ -94,6 +98,7 @@ public class MarketPointsProcess implements JobProcessor {
 
 	@Override
 	public void read() {
+		logger.info("Read : "+getJobName());
 		marketPointsInc1 = marketPointsRepository.getViewPointsPerContract(new Long(1));
 		marketPointsInc2 = marketPointsRepository.getViewPointsPerContract(new Long(2));
 		marketPointsInc1Totaal = marketingPointsTotalRepository.getViewPointsTotal(new Long(1));
@@ -107,6 +112,7 @@ public class MarketPointsProcess implements JobProcessor {
 	@Override
 	public void process() {
 		// TODO Auto-generated method stub
+		logger.info("Process : "+getJobName());
 		marketPointsInc1ToWrite = marketPointsFileFormat.formatMarketPointsContractFileData(marketPointsInc1);
 		marketPointsInc2ToWrite = marketPointsFileFormat.formatMarketPointsContractFileData(marketPointsInc2);
 		marketPointsInc1TotaalToWrite = marketPointsFileFormat.formatMarketPointsTotaalFileData(marketPointsInc1Totaal);
@@ -117,6 +123,7 @@ public class MarketPointsProcess implements JobProcessor {
 
 	@Override
 	public void write() {
+		logger.info("Write : "+getJobName());
 		marketPointsCSVWriter.setRowList(marketPointsInc1ToWrite);
 		marketPointsCSVWriter.setHeader(contractColumns);
 		marketPointsCSVWriter.setFilename(incentive1FileName);
@@ -149,7 +156,7 @@ public class MarketPointsProcess implements JobProcessor {
 
 	@Override
 	public void send() {
-		// TODO Auto-generated method stub
+		logger.info("Send : "+getJobName());
 		marketPointsEmailSender.setEmailDetails(emailDetails);
 		marketPointsEmailSender.accept(senderVisitor);
 		
@@ -158,6 +165,7 @@ public class MarketPointsProcess implements JobProcessor {
 	
 	@Override
 	public void postProcess(){
+		logger.info("Post Process : "+getJobName());
 		archiveFileCreator.createArchiveFile(fileDirecotry);
 	}
 

@@ -3,6 +3,8 @@ package nl.yestelecom.phoenix.batch.job.marketpoints;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPoints;
@@ -11,11 +13,11 @@ import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPointsTotal;
 @Service
 public class MarketPointsFileFormat {
 	public static final String CSV_FILE_DELIMETER = ",";
-	
+	private static Logger logger = LoggerFactory.getLogger(MarketPointsProcess.class);
 	
 	public List<String> formatMarketPointsContractFileData(List<MarketPoints> marketPoints){
+		logger.info("Formating Contract file");
 		List<String> valuesToWrite = new ArrayList<String>();
-		
 		for(MarketPoints mp : marketPoints){
 			String value = mp.getVoicePoints()+CSV_FILE_DELIMETER+
 					mp.getDataPoints()+CSV_FILE_DELIMETER+
@@ -31,6 +33,7 @@ public class MarketPointsFileFormat {
 	}
 	
 	public List<String> formatMarketPointsTotaalFileData(List<MarketPointsTotal> marketPoints){
+		logger.info("Formating Totaal file");
 		List<String> valuesToWrite = new ArrayList<String>();
 		for(MarketPointsTotal mpt : marketPoints){
 			String value = mpt.getVoicePoints()+CSV_FILE_DELIMETER+
@@ -48,6 +51,7 @@ public class MarketPointsFileFormat {
 	}
 	
 	public List<String> formatMarketPointsMergedData(List<Object[]> marketPoints){
+		logger.info("Formating Mergeed file");
 		List<String> valuesToWrite = new ArrayList<String>();
 		for(Object[] mp : marketPoints){
 			String value="";
