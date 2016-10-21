@@ -3,6 +3,8 @@ package nl.yestelecom.phoenix.batch.job.creditcontrol;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
 public class CreditControlProcess implements JobProcessor {
+	private static Logger logger = LoggerFactory.getLogger(CreditControlProcess.class);
 
 	@Autowired
 	CreditControlCSVWriter creditControlcsvWriter;
@@ -50,11 +53,13 @@ public class CreditControlProcess implements JobProcessor {
 	EmailDetails emailDetails;
 
 	public void read() {
+		logger.info("Read : "+getJobName());
 		creditControl = creditControlRepository.findAll();
 		emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
 	}
 
 	public void process() {
+		logger.info("Process : "+getJobName());
 		ccList = new ArrayList<String>();
 		for (CreditControl cc : creditControl) {
 			ccList.add(cc.toString());
@@ -62,11 +67,13 @@ public class CreditControlProcess implements JobProcessor {
 	}
 
 	public void write() {
+		logger.info("Write : "+getJobName());
 		creditControlcsvWriter.setRowList(ccList);
 		creditControlcsvWriter.accept(writerVisitorImpl);
 	}
 
 	public void send() {
+		logger.info("Send : "+getJobName());
 		creditControlEmailSender.setEmailDetails(emailDetails);
 		creditControlEmailSender.accept(senderVisitor);
 		creditControlFTPSender.accept(senderVisitor);
@@ -74,6 +81,7 @@ public class CreditControlProcess implements JobProcessor {
 
 	@Override
 	public void postProcess() {
+		logger.info("Post Process : "+getJobName());
 		archiveFileCreator.createArchiveFile(fileDirecotry);
 		
 	}
