@@ -3,6 +3,8 @@ package nl.yestelecom.phoenix.batch.job.simoverview;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.simoverview.model.SimOverview;
@@ -10,8 +12,10 @@ import nl.yestelecom.phoenix.batch.job.simoverview.model.SimTypeCount;
 
 @Service
 public class SimOverviewHelper {
+	private static Logger logger = LoggerFactory.getLogger(SimOverviewHelper.class);
 	
 	SimOverview buildSimOverview(SimTypeCount simTypecount, SimOverview simOverview){
+		logger.info("Counting Sim Type");
 		
 		if(SimOverviewConstants.Y32K.equals(simTypecount.getSimType())){
 			simOverview.setY32KCount(simTypecount.getCount());		
@@ -51,6 +55,7 @@ public class SimOverviewHelper {
 	}
 
 	List<String> simOverviewStringData(List<SimOverview> simOverviewData){
+		logger.info("Formating data");
 		List<String> simOverviewStringList = new ArrayList<String>();
 		for(SimOverview simOver : simOverviewData){
 			String sim = "";

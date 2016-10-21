@@ -3,6 +3,8 @@ package nl.yestelecom.phoenix.batch.job.simoverview;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Service;
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
-import nl.yestelecom.phoenix.batch.job.marketpoints.MarketPointsEmailSender;
 import nl.yestelecom.phoenix.batch.job.simoverview.model.DealerHeadQuarters;
 import nl.yestelecom.phoenix.batch.job.simoverview.model.SimOverview;
 import nl.yestelecom.phoenix.batch.job.simoverview.model.SimTypeCount;
@@ -22,6 +23,7 @@ import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
 public class SimOverviewProcess implements JobProcessor{
+	private static Logger logger = LoggerFactory.getLogger(SimOverviewProcess.class);
 
 	@Autowired
 	SimTypeCountRepository simTypeCountRepository;
@@ -64,8 +66,7 @@ public class SimOverviewProcess implements JobProcessor{
 	
 	@Override
 	public void read() {
-		/*simTypeCount = simTypeCountRepository.getTypeCount();
-		System.out.println("size is >> "+simTypeCount.get(0).getDlrId());*/
+		logger.info("Read : "+getJobName());
 		
 		yestelList = simTypeCountRepository.getCountForYesTel();
 		System.out.println("size is >> "+yestelList.size());
@@ -82,10 +83,12 @@ public class SimOverviewProcess implements JobProcessor{
 
 	@Override
 	public void process() {
+		logger.info("Process : "+getJobName());
 		processYesTelList();
 	}
 
 	private void processYesTelList() {
+		logger.info("Processeing YesTel List");
 		simOvewviewDataList = new ArrayList<SimOverview>();
 		SimOverview simOverviewYesTel = createYesTelSimCount();
 		SimOverview simOverviewbusPartner = createBusTelSimCount();
@@ -102,8 +105,9 @@ public class SimOverviewProcess implements JobProcessor{
 	}
 
 	private SimOverview createBusTelSimCount() {
+		logger.info("Processeing BusTel List");
 		SimOverview simOverview = new SimOverview();
-	///p_bp_totaal := p_bp_32k + p_bp_32kduo + p_bp_usim + p_bp_usimduo;
+	
 		Long grossStock = new Long(0);
 		for (Object[] bp : busPartnerList) {
 			SimTypeCount simTypeCount = new SimTypeCount();
@@ -114,7 +118,6 @@ public class SimOverviewProcess implements JobProcessor{
 				simOverview.setNecessary(simTypeCount.getCount());
 			}
 		}
-		// simOverview.getY32KDUOCount() +
 		grossStock = simOverview.getY32KCount() + simOverview.getUSIMCount() + simOverview.getUSIMDUOCount();
 		simOverview.setGrossStock(grossStock);
 		simOverview.setNetStock(simOverview.getGrossStock()-simOverview.getNecessary());
@@ -149,7 +152,7 @@ public class SimOverviewProcess implements JobProcessor{
 
 	@Override
 	public void write() {
-		// TODO Auto-generated method stub
+		logger.info("Write : "+getJobName());
 		String header = simOverviewFileFormat.createHeader();
 		simOverviewCSVWriter.setHeader(header);
 		List<String> simOverviewStringData = simOverviewHelper.simOverviewStringData(simOvewviewDataList);
@@ -161,6 +164,7 @@ public class SimOverviewProcess implements JobProcessor{
 
 	@Override
 	public void send() {
+		logger.info("Send : "+getJobName());
 		simOverviewEmailSender.setEmailDetails(emailDetails);
 		simOverviewEmailSender.accept(senderVisitor);
 		
@@ -168,6 +172,7 @@ public class SimOverviewProcess implements JobProcessor{
 
 	@Override
 	public void postProcess() {
+		logger.info("Post Process : "+getJobName());
 		archiveFileCreator.createArchiveFile(fileDirecotry);
 		
 	}
