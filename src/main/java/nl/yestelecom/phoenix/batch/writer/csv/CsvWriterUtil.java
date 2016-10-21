@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.opencsv.CSVWriter;
@@ -11,6 +13,7 @@ import com.opencsv.CSVWriter;
 @Service
 public class CsvWriterUtil {
 
+	private static Logger logger = LoggerFactory.getLogger(CsvWriterUtil.class);
 	String header;
 	List<String> rowValue;
 	private String fileName;
@@ -18,6 +21,7 @@ public class CsvWriterUtil {
 	private char delimiter = ';';
 
 	public void write() {
+		logger.info("Writing file >> "+fileName);
 		writeCSVData();
 	}
 
@@ -31,6 +35,7 @@ public class CsvWriterUtil {
 				String[] entries = val.split(",");
 				writer.writeNext(entries);
 			}
+			logger.info("Finished Write");
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
