@@ -3,10 +3,13 @@ package nl.yestelecom.phoenix.batch.job.vasrecon;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
+import nl.yestelecom.phoenix.batch.job.creditcontrol.CreditControlProcess;
 import nl.yestelecom.phoenix.batch.job.vasrecon.model.VasReconData;
 import nl.yestelecom.phoenix.batch.job.vasrecon.model.VasReconPriceView;
 import nl.yestelecom.phoenix.batch.job.vasrecon.model.VasReconProductsView;
@@ -16,6 +19,7 @@ import nl.yestelecom.phoenix.batch.job.vasrecon.repo.VasReconRepository;
 
 @Service
 public class VasReconProcess implements JobProcessor{
+	private static Logger logger = LoggerFactory.getLogger(VasReconProcess.class);
 
 	@Autowired
 	VasReconRepository vasReconRepository;
@@ -33,6 +37,7 @@ public class VasReconProcess implements JobProcessor{
 	
 	@Override
 	public void read() {
+		logger.info("Read : "+getJobName());
 		vasReconProductsView = vasReconRepository.findAll();
 		vasPriceReconView = vasReconPriceViewRepo.findAll();
 		
@@ -40,6 +45,7 @@ public class VasReconProcess implements JobProcessor{
 
 	@Override
 	public void process() {
+		logger.info("Process : "+getJobName());
 		c2yList = new ArrayList<VasReconData>();
 		zygoList = new ArrayList<VasReconData>();
 		for ( int i = 0; i < 10; i++) {
@@ -61,6 +67,7 @@ public class VasReconProcess implements JobProcessor{
 	}
 
 	private void processPriceChanges(List<VasReconPriceView> vasPriceReconView2) {
+		logger.info("Process Price differences");
 		priceList = new ArrayList<VasReconData>();
 		for(VasReconPriceView priceChange : vasPriceReconView){
 			VasReconData priceChangeToSave = new VasReconData();
@@ -81,6 +88,7 @@ public class VasReconProcess implements JobProcessor{
 	}
 
 	private VasReconData processSkelRecord(VasReconProductsView vasReconDataView) {
+		logger.info("Process Skeleton differences");
 		VasReconData vasReconData = new VasReconData();
 			vasReconData.setAction("TOEV");
 			vasReconData.setGssId(vasReconDataView.getGssId());
@@ -102,6 +110,7 @@ public class VasReconProcess implements JobProcessor{
 	}
 
 	private VasReconData processZygoRecord(VasReconProductsView vasReconDataView) {
+		logger.info("Process Zygo differences");
 		VasReconData vasReconData = new VasReconData();
 		vasReconData.setAction("BEIN");
 		vasReconData.setGssId(vasReconDataView.getGssId());
@@ -115,7 +124,7 @@ public class VasReconProcess implements JobProcessor{
 
 	@Override
 	public void write() {
-		// TODO Auto-generated method stub
+		logger.info("Write : "+getJobName());
 		vasReconDataRepository.save(zygoList);
 		vasReconDataRepository.save(c2yList);
 		vasReconDataRepository.save(priceList);
@@ -136,7 +145,7 @@ public class VasReconProcess implements JobProcessor{
 
 	@Override
 	public String getJobName() {
-		return null;
+		return "VAS_RECON";
 		
 	}
 
