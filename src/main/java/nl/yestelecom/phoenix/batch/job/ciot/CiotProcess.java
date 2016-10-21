@@ -4,11 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
+import nl.yestelecom.phoenix.batch.job.creditcontrol.CreditControlProcess;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
 import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreator;
@@ -17,6 +20,8 @@ import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
 public class CiotProcess implements JobProcessor {
+	private static Logger logger = LoggerFactory.getLogger(CiotProcess.class);
+	
 
 	@Autowired
 	private CiotRepository ciotRepo;
@@ -48,19 +53,22 @@ public class CiotProcess implements JobProcessor {
 
 	@Override
 	public void read() {
-		ciotData = ciotRepo.findAll();
+		logger.info("Read : "+getJobName());
+		ciotData = ciotRepo.fetchOneData();
 		sequence = ciotRepo.generateFileSequence();
 		emailDetails= emailDetailsRepo.getEmailDetailsForJob(getJobName());
 	}
 
 	@Override
 	public void process() {
+		logger.info("Process : "+getJobName());
 		xmlData.put("abonneelist", ciotData);
 		sequence = ciotUtil.getDate() + sequence;
 	}
 
 	@Override
 	public void write() {
+		logger.info("Write : "+getJobName());
 		ciotXmlWriter.setSequence(sequence);
 		ciotXmlWriter.setXmlData(xmlData);
 		ciotXmlWriter.accept(writerVisitorImpl);
@@ -68,6 +76,7 @@ public class CiotProcess implements JobProcessor {
 
 	@Override
 	public void send() {
+		logger.info("Send : "+getJobName());
 		ciotEmailSender.setEmailDetails(emailDetails);
 		ciotEmailSender.accept(senderVisitor);
 		
@@ -78,6 +87,7 @@ public class CiotProcess implements JobProcessor {
 
 	@Override
 	public void postProcess() {
+		logger.info("Post Process : "+getJobName());
 		archiveFileCreator.createArchiveFile(fileDirecotry);
 		
 	}
