@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -15,7 +17,7 @@ import org.thymeleaf.context.Context;
 
 @Service
 public class XmlWriterUtil {
-
+	private static Logger logger = LoggerFactory.getLogger(XmlWriterUtil.class);
 	@Autowired
 	@Qualifier("classPathTemplateEngineXML")
 	private TemplateEngine templateEngineXML;
@@ -27,6 +29,7 @@ public class XmlWriterUtil {
 	private String xmlContent;
 
 	public void generateXML() {
+		logger.info("Writing file >> "+fileName);
 		xmlContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		Context ctx = new Context(LocaleContextHolder.getLocale(), xmlData);
 		xmlContent += templateEngineXML.process(templateName, ctx);
@@ -44,7 +47,7 @@ public class XmlWriterUtil {
 			fileWriter = new FileWriter(file.getAbsoluteFile());
 			bufferWritter = new BufferedWriter(fileWriter);
 			bufferWritter.write(xmlContent);
-
+			logger.info("Finished Write");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
