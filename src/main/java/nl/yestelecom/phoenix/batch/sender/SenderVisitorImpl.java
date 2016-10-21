@@ -1,5 +1,7 @@
 package nl.yestelecom.phoenix.batch.sender;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +17,12 @@ public class SenderVisitorImpl implements SenderVisitor {
 	
 	@Autowired
 	MailSenderUtil mailSenderUtil;
+	
+	private static Logger logger = LoggerFactory.getLogger(SenderVisitorImpl.class);
 
 	@Override
 	public void sendContent(FTPSender ftp) {
+		logger.info("FTP Initiated ");
 		if (ftp.getPrivateKey() != null && !ftp.getPrivateKey().isEmpty()) {
 			ftpSenderUtil.addIdentity(ftp.getPrivateKey());
 		}
@@ -30,9 +35,10 @@ public class SenderVisitorImpl implements SenderVisitor {
 	@Override
 	public void sendContent(EmailSender email) {
 		try{
+			logger.info("SENDING MAIL ");
 			mailSenderUtil.sendMail(email.getEmailTo(), email.getEmailFrom(), email.getFilePath(), email.getSubject(), email.getText());
 		}catch(Exception e){
-			System.out.println(e);
+			logger.error(e.getMessage());
 		}
 		
 	}
