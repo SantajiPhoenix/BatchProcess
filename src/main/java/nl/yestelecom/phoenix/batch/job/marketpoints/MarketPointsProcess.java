@@ -16,7 +16,6 @@ import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPoints;
 import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPointsTotal;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsRepository;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsTotalRepository;
-import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreator;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -48,7 +47,7 @@ public class MarketPointsProcess implements JobProcessor {
 	SenderVisitor senderVisitor;
 	
 	@Autowired
-	ArchiveFileCreator archiveFileCreator;
+	MarketPointsArchiveFileImpl archiveFileImpl;
 	
 	@Autowired
 	EmailDetailsRepo emailDetailsRepo;
@@ -71,14 +70,16 @@ public class MarketPointsProcess implements JobProcessor {
 	@Value("${marketpoints.incentive1+2.total}")
 	private String incentive1and2totaalFileName;
 
-	@Value("${mail.file.directory}")
-	private String fileDirecotry;
 	
 	@Value("${marketpoints.contract.column.names}")
 	private String contractColumns;
 
 	@Value("${marketpoints.totaal.column.names}")
 	private String totalColumns;
+	
+	@Value("${marketpoints.jobname}")
+	private String jobName;
+
 
 
 	List<MarketPoints> marketPointsInc1;
@@ -166,12 +167,11 @@ public class MarketPointsProcess implements JobProcessor {
 	@Override
 	public void postProcess(){
 		logger.info("Post Process : "+getJobName());
-		archiveFileCreator.createArchiveFile(fileDirecotry);
+		archiveFileImpl.archiveCurrentFile();
 	}
 
 	@Override
 	public String getJobName() {
-		String jobName = "MARKET_POINTS";
 		return jobName;
 	}
 
