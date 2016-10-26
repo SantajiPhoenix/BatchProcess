@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nl.yestelecom.phoenix.batch.job.ciot.CiotProcess;
 import nl.yestelecom.phoenix.batch.job.creditcontrol.CreditControlProcess;
 import nl.yestelecom.phoenix.batch.job.marketpoints.MarketPointsProcess;
+import nl.yestelecom.phoenix.batch.job.scheduler.JobRunner;
 import nl.yestelecom.phoenix.batch.job.simoverview.SimOverviewProcess;
 
 @RestController
@@ -25,6 +26,9 @@ public class BGProcessController {
 	
 	@Autowired
 	MarketPointsProcess marketPointsProcess;
+	
+	@Autowired
+	JobRunner jobRunner;
 
 	@RequestMapping(value = "/creditcontrol", method = RequestMethod.GET)
 	public void runCreditControlProcess() {
@@ -44,6 +48,11 @@ public class BGProcessController {
 	@RequestMapping(value = "/marketpoints", method = RequestMethod.GET)
 	public void runMarketPointsProcess() {
 		marketPointsProcess.execute();
+	}
+	
+	@RequestMapping(value = "/runAllJobs", method = RequestMethod.GET)
+	public void runAllJobs() {
+		jobRunner.runJobs();
 	}
 
 }
