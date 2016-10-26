@@ -49,13 +49,13 @@ public class SimOverviewProcess implements JobProcessor{
 	@Autowired
 	EmailDetailsRepo emailDetailsRepo;
 	@Autowired
-	ArchiveFileCreator archiveFileCreator;
+	SimOverviewArchiveFileImpl simOverviewArchiveFileImpl;
 	
 	@Autowired
 	SenderVisitor senderVisitor;
 	
-	@Value("${simoverview.filepath}")
-	private String fileDirecotry;
+	@Value("${simoverview.jobname}")
+	private String jobName;
 	
 	List<SimTypeCount> simTypeCount ;
 	List<DealerHeadQuarters> dealerHQ;
@@ -173,15 +173,13 @@ public class SimOverviewProcess implements JobProcessor{
 	@Override
 	public void postProcess() {
 		logger.info("Post Process : "+getJobName());
-		archiveFileCreator.createArchiveFile(fileDirecotry);
+		simOverviewArchiveFileImpl.archiveCurrentFile();
 		
 	}
 
 	@Override
 	public String getJobName() {
-		String jobName = "SIM_OVERVIEW";
 		return jobName;
-		// TODO Auto-generated method stub
 		
 	}
 
