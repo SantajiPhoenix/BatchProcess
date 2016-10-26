@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
-import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreator;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -42,10 +41,11 @@ public class CreditControlProcess implements JobProcessor {
 	EmailDetailsRepo emailDetailsRepo;
 	
 	@Autowired
-	ArchiveFileCreator archiveFileCreator;
+	CreditControlArchiveFileImpl archiveFileImpl;
+
 	
-	@Value("${creditcontrol.filePath}")
-	private String fileDirecotry;
+	@Value("${creditcontrol.jobname}")
+	private String jobName;
 
 	List<CreditControl> creditControl;
 
@@ -82,15 +82,13 @@ public class CreditControlProcess implements JobProcessor {
 	@Override
 	public void postProcess() {
 		logger.info("Post Process : "+getJobName());
-		archiveFileCreator.createArchiveFile(fileDirecotry);
+		archiveFileImpl.archiveCurrentFile();;
 		
 	}
 
 	@Override
 	public String getJobName() {
-		String jobName = "CREDIT_CONTROL";
 		return jobName;
-		// TODO Auto-generated method stub
 		
 	}
 
