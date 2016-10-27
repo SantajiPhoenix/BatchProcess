@@ -3,6 +3,7 @@ package nl.yestelecom.phoenix.batch.sender.ftp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 
@@ -79,8 +80,16 @@ public class FTPSenderUtil {
 			channelSftp = (ChannelSftp) channel;
 			channelSftp.cd(remoteDirectory);
 			File f = new File(filePath + fileName);
-			channelSftp.put(new FileInputStream(f), f.getName());
+			FileInputStream inputStream = new FileInputStream(f);
+			channelSftp.put(inputStream, f.getName());
 			logger.info("File Sent");
+			try {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		} catch (SftpException | FileNotFoundException e) {
 			e.printStackTrace();
 		} finally {
@@ -88,6 +97,10 @@ public class FTPSenderUtil {
 				channelSftp.disconnect();
 				channelSftp.exit();
 			}
+			if (channel != null)
+				channel.disconnect();
+			if (session != null)
+				session.disconnect();
 		}
 	}
 

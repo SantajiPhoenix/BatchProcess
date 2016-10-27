@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
+import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreatorUtil;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -41,11 +42,13 @@ public class CreditControlProcess implements JobProcessor {
 	EmailDetailsRepo emailDetailsRepo;
 	
 	@Autowired
-	CreditControlArchiveFileImpl archiveFileImpl;
+	ArchiveFileCreatorUtil archiveFileCreator;
 
 	
 	@Value("${creditcontrol.jobname}")
 	private String jobName;
+	@Value("${creditcontrol.filePath}")
+	private String fileDirecotry;
 
 	List<CreditControl> creditControl;
 
@@ -82,7 +85,8 @@ public class CreditControlProcess implements JobProcessor {
 	@Override
 	public void postProcess() {
 		logger.info("Post Process : "+getJobName());
-		archiveFileImpl.archiveCurrentFile();;
+		archiveFileCreator.setFileDirecotry(fileDirecotry);
+		archiveFileCreator.archiveCurrentFile();;
 		
 	}
 

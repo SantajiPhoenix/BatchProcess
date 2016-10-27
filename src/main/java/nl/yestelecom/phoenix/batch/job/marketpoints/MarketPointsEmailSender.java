@@ -17,7 +17,7 @@ public class MarketPointsEmailSender implements EmailSender{
 	String emailTo;
 	String subject;
 	
-	@Value("${mail.file.directory}")
+	@Value("${marketpoints.filePath}")
 	private String fileDirecotry;
 
 	@Override

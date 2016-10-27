@@ -11,10 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
-import nl.yestelecom.phoenix.batch.job.creditcontrol.CreditControlProcess;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
-import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreator;
+import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreatorUtil;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -38,22 +37,25 @@ public class CiotProcess implements JobProcessor {
 	@Autowired
 	private CiotEmailSender ciotEmailSender;
 	@Autowired
-	ArchiveFileCreator archiveFileCreator;
+	private ArchiveFileCreatorUtil archiveFileCreator;
 	
 	@Autowired
-	EmailDetailsRepo emailDetailsRepo;
+	private EmailDetailsRepo emailDetailsRepo;
 	
 	@Value("${ciot.filePath}")
 	private String fileDirecotry;
+	@Value("${ciot.jobName}")
+	private String jobName;
 
 	private List<Ciot> ciotData;
 	private String sequence;
 	private Map<String, Object> xmlData = new HashMap<>();
-	EmailDetails emailDetails;
+	private EmailDetails emailDetails;
 
 	@Override
 	public void read() {
 		logger.info("Read : "+getJobName());
+		//ciotData = ciotRepo.findAll();
 		ciotData = ciotRepo.fetchOneData();
 		sequence = ciotRepo.generateFileSequence();
 		emailDetails= emailDetailsRepo.getEmailDetailsForJob(getJobName());
@@ -88,13 +90,13 @@ public class CiotProcess implements JobProcessor {
 	@Override
 	public void postProcess() {
 		logger.info("Post Process : "+getJobName());
-		archiveFileCreator.createArchiveFile(fileDirecotry);
+		archiveFileCreator.setFileDirecotry(fileDirecotry);
+		archiveFileCreator.archiveCurrentFile();
 		
 	}
 
 	@Override
 	public String getJobName() {
-		String jobName = "CIOT";
 		return jobName;
 		
 	}

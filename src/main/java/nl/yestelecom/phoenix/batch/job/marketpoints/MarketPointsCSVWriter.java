@@ -11,7 +11,7 @@ import nl.yestelecom.phoenix.batch.writer.csv.CsvWriter;
 @Service
 public class MarketPointsCSVWriter implements CsvWriter {
 
-	@Value("${mail.file.directory}")
+	@Value("${marketpoints.filePath}")
 	private String fileDirecotry;
 
 	@Value("${marketpoints.incentive1}")
@@ -23,7 +23,6 @@ public class MarketPointsCSVWriter implements CsvWriter {
 
 	@Override
 	public String getHeader() {
-		// TODO Auto-generated method stub
 		return header;
 	}
 

@@ -16,6 +16,7 @@ import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPoints;
 import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPointsTotal;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsRepository;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsTotalRepository;
+import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreatorUtil;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -47,7 +48,7 @@ public class MarketPointsProcess implements JobProcessor {
 	SenderVisitor senderVisitor;
 	
 	@Autowired
-	MarketPointsArchiveFileImpl archiveFileImpl;
+	ArchiveFileCreatorUtil archiveFileCreator;
 	
 	@Autowired
 	EmailDetailsRepo emailDetailsRepo;
@@ -79,6 +80,9 @@ public class MarketPointsProcess implements JobProcessor {
 	
 	@Value("${marketpoints.jobname}")
 	private String jobName;
+	
+	@Value("${marketpoints.filePath}")
+	private String fileDirecotry;	
 
 
 
@@ -167,7 +171,8 @@ public class MarketPointsProcess implements JobProcessor {
 	@Override
 	public void postProcess(){
 		logger.info("Post Process : "+getJobName());
-		archiveFileImpl.archiveCurrentFile();
+		archiveFileCreator.setFileDirecotry(fileDirecotry);
+		archiveFileCreator.archiveCurrentFile();
 	}
 
 	@Override

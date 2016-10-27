@@ -15,6 +15,7 @@ import nl.yestelecom.phoenix.batch.job.creditcontrol.CreditControlProcess;
 import nl.yestelecom.phoenix.batch.job.jobstatus.JobStatus;
 import nl.yestelecom.phoenix.batch.job.jobstatus.JobStatusRepo;
 import nl.yestelecom.phoenix.batch.job.marketpoints.MarketPointsProcess;
+import nl.yestelecom.phoenix.batch.job.preventel.PreventelProcess;
 import nl.yestelecom.phoenix.batch.job.simoverview.SimOverviewProcess;
 
 @Service
@@ -34,16 +35,19 @@ public class JobRunner {
 	CreditControlProcess creditControlProcess;
 	
 	@Autowired
+	PreventelProcess preventelProcess;
+	
+	@Autowired
 	JobStatusRepo jobStatusRepo;
 	
 	List<JobProcessor> jobs = new ArrayList<JobProcessor>();
 	
 	public void addJobs(){
 		jobs.add(ciotProcess);
+		jobs.add(preventelProcess);
 		jobs.add(simOverviewProcess);
 		jobs.add(creditControlProcess);
 		jobs.add(marketPointsProcess);
-
 	}
 	
 	public List<JobProcessor> getJobs(){

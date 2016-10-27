@@ -29,7 +29,7 @@ public class XmlWriterUtil {
 	private String xmlContent;
 
 	public void generateXML() {
-		logger.info("Writing file >> "+fileName);
+		logger.info("Writing file >> " + fileName);
 		xmlContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		Context ctx = new Context(LocaleContextHolder.getLocale(), xmlData);
 		xmlContent += templateEngineXML.process(templateName, ctx);
@@ -49,12 +49,13 @@ public class XmlWriterUtil {
 			bufferWritter.write(xmlContent);
 			logger.info("Finished Write");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error while writing file >> " + e);
 		} finally {
 			try {
 				bufferWritter.close();
+				fileWriter.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("Error while closing buffer writers >> " + e);
 			}
 		}
 	}

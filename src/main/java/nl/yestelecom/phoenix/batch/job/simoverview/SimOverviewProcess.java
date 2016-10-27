@@ -17,7 +17,7 @@ import nl.yestelecom.phoenix.batch.job.simoverview.model.SimOverview;
 import nl.yestelecom.phoenix.batch.job.simoverview.model.SimTypeCount;
 import nl.yestelecom.phoenix.batch.job.simoverview.repo.DealerHeadQuartersRepository;
 import nl.yestelecom.phoenix.batch.job.simoverview.repo.SimTypeCountRepository;
-import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreator;
+import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreatorUtil;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
@@ -49,13 +49,15 @@ public class SimOverviewProcess implements JobProcessor{
 	@Autowired
 	EmailDetailsRepo emailDetailsRepo;
 	@Autowired
-	SimOverviewArchiveFileImpl simOverviewArchiveFileImpl;
+	ArchiveFileCreatorUtil archiveFileCreator;
 	
 	@Autowired
 	SenderVisitor senderVisitor;
 	
 	@Value("${simoverview.jobname}")
 	private String jobName;
+	@Value("${simoverview.filepath}")
+	private String fileDirecotry;
 	
 	List<SimTypeCount> simTypeCount ;
 	List<DealerHeadQuarters> dealerHQ;
@@ -173,7 +175,8 @@ public class SimOverviewProcess implements JobProcessor{
 	@Override
 	public void postProcess() {
 		logger.info("Post Process : "+getJobName());
-		simOverviewArchiveFileImpl.archiveCurrentFile();
+		archiveFileCreator.setFileDirecotry(fileDirecotry);
+		archiveFileCreator.archiveCurrentFile();
 		
 	}
 

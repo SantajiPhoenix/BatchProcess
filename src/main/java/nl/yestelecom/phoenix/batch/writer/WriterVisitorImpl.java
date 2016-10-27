@@ -7,17 +7,25 @@ import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.writer.csv.CsvWriter;
 import nl.yestelecom.phoenix.batch.writer.csv.CsvWriterUtil;
+import nl.yestelecom.phoenix.batch.writer.txt.TxtWriter;
+import nl.yestelecom.phoenix.batch.writer.txt.TxtWriterUtil;
 import nl.yestelecom.phoenix.batch.writer.xml.XmlWriter;
 import nl.yestelecom.phoenix.batch.writer.xml.XmlWriterUtil;
 
 @Service
 public class WriterVisitorImpl implements WriteVisitor {
-	@Autowired
+	
+    @Autowired
 	CsvWriterUtil csvFileWriter;
 
 	@Autowired
 	private XmlWriterUtil xmlFileWriter;
+	
+	@Autowired
+	private TxtWriterUtil txtFileWriter;
+
 	private static Logger logger = LoggerFactory.getLogger(WriterVisitorImpl.class);
+
 
 	public void writeContent(CsvWriter csv) {
 		logger.info("Writing CSV File");
@@ -34,5 +42,11 @@ public class WriterVisitorImpl implements WriteVisitor {
 		xmlFileWriter.setTemplateName(xml.getTemplateName());
 		xmlFileWriter.generateXML();
 		xmlFileWriter.write();
+	}
+	
+	public void writeContent(TxtWriter txt) {
+		txtFileWriter.setFileProperties(txt.getFileName(), txt.getFilePath());
+		txtFileWriter.setListRowValue(txt.getRowList());
+		txtFileWriter.write();
 	}
 }
