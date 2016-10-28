@@ -9,15 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import nl.yestelecom.phoenix.batch.archiver.ArchiveFileCreatorUtil;
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
-import nl.yestelecom.phoenix.batch.job.marketpoints.MarketPointsProcess;
-import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreatorUtil;
-import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
 public class PreventelProcess implements JobProcessor {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(PreventelProcess.class);
 
 	@Autowired
@@ -29,12 +27,10 @@ public class PreventelProcess implements JobProcessor {
 	@Autowired
 	private WriteVisitor writerVisitorImpl;
 	@Autowired
-	private PreventelSFTPSender preventelSFTPSender;
-	@Autowired
-	private SenderVisitor senderVisitor;
+	private PreventelEncodedFileSender preventelEncodedFileSender;
 	@Autowired
 	private ArchiveFileCreatorUtil archiveFileCreator;
-	
+
 	@Value("${preventel.fileName}")
 	private String fileName;
 	@Value("${preventel.jobname}")
@@ -48,14 +44,14 @@ public class PreventelProcess implements JobProcessor {
 
 	@Override
 	public void read() {
-		logger.info("Read : "+getJobName());
-		//preventelList = preventelRepo.findAll();
+		logger.info("Read : " + getJobName());
+		// preventelList = preventelRepo.findAll();
 		preventelList = preventelRepo.fetchOneData();
 	}
 
 	@Override
 	public void process() {
-		logger.info("Process : "+getJobName());
+		logger.info("Process : " + getJobName());
 		preventelDataList = new ArrayList<String>();
 		int count = 0;
 		sequence = preventelUtil.getDate() + "V1";
@@ -74,7 +70,7 @@ public class PreventelProcess implements JobProcessor {
 
 	@Override
 	public void write() {
-		logger.info("Write : "+getJobName());
+		logger.info("Write : " + getJobName());
 		preventelTxtWriter.setSequence(sequence);
 		preventelTxtWriter.setData(preventelDataList);
 		preventelTxtWriter.accept(writerVisitorImpl);
@@ -82,14 +78,14 @@ public class PreventelProcess implements JobProcessor {
 
 	@Override
 	public void send() {
-		logger.info("Send : "+getJobName());
-		preventelSFTPSender.setSequence(sequence);
-		preventelSFTPSender.accept(senderVisitor);
+		logger.info("Send : " + getJobName());
+		preventelEncodedFileSender.setSequence(sequence);
+		preventelEncodedFileSender.fileEncoderAndSender();
 	}
 
 	@Override
 	public void postProcess() {
-		logger.info("Post Process : "+getJobName());
+		logger.info("Post Process : " + getJobName());
 		archiveFileCreator.setFileDirecotry(fileDirecotry);
 		archiveFileCreator.archiveCurrentFile();
 	}

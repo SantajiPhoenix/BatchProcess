@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
-import nl.yestelecom.phoenix.batch.job.creditcontrol.CreditControlProcess;
 import nl.yestelecom.phoenix.batch.job.vasrecon.model.VasReconData;
 import nl.yestelecom.phoenix.batch.job.vasrecon.model.VasReconPriceView;
 import nl.yestelecom.phoenix.batch.job.vasrecon.model.VasReconProductsView;

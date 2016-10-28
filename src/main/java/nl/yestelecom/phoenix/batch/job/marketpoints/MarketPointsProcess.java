@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
+import nl.yestelecom.phoenix.batch.archiver.ArchiveFileCreatorUtil;
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
 import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
@@ -16,7 +17,6 @@ import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPoints;
 import nl.yestelecom.phoenix.batch.job.marketpoints.model.MarketPointsTotal;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsRepository;
 import nl.yestelecom.phoenix.batch.job.marketpoints.repo.MarketPointsTotalRepository;
-import nl.yestelecom.phoenix.batch.job.util.ArchiveFileCreatorUtil;
 import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 

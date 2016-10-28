@@ -18,8 +18,6 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
-import nl.yestelecom.phoenix.batch.sender.SenderVisitorImpl;
-
 @Component
 public class FTPSenderUtil {
 
@@ -83,14 +81,13 @@ public class FTPSenderUtil {
 			FileInputStream inputStream = new FileInputStream(f);
 			channelSftp.put(inputStream, f.getName());
 			logger.info("File Sent");
-			try {
-				if (inputStream != null) {
-					inputStream.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (inputStream != null) {
+				inputStream.close();
 			}
+
 		} catch (SftpException | FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			if (channelSftp != null) {

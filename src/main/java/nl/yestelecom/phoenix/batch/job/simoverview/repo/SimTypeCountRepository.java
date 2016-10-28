@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import nl.yestelecom.phoenix.batch.job.simoverview.model.SimOverviewBusinessPartner;
 import nl.yestelecom.phoenix.batch.job.simoverview.model.SimTypeCount;
 
 public interface SimTypeCountRepository extends JpaRepository<SimTypeCount, Long>{
