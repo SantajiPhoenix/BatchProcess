@@ -104,15 +104,21 @@ public class MarketPointsProcess implements JobProcessor {
 	@Override
 	public void read() {
 		logger.info("Read : "+getJobName());
-		marketPointsInc1 = marketPointsRepository.getViewPointsPerContract(new Long(1));
-		marketPointsInc2 = marketPointsRepository.getViewPointsPerContract(new Long(2));
-		marketPointsInc1Totaal = marketingPointsTotalRepository.getViewPointsTotal(new Long(1));
-		marketPointsInc2Totaal = marketingPointsTotalRepository.getViewPointsTotal(new Long(2));
-		marketPointsInc1and2 = marketPointsRepository.getViewPointsPerContractMerged();
-		marketPointsInc1and2Totaal = marketingPointsTotalRepository.getMergedViewPointsTotal();
+		marketPointsInc1 = marketPointsRepository.getViewPointsPerContractInc1();
+		marketPointsInc2 = marketPointsRepository.getViewPointsPerContractInc2();
+		marketPointsInc1Totaal = marketingPointsTotalRepository.getViewPointsTotalInc1();
+		marketPointsInc2Totaal = marketingPointsTotalRepository.getViewPointsTotalInc2();
+		marketPointsInc1and2 = marketPointsRepository.getViewPointsPerContractMergedInc1();
+		List<Object[]> marketPointsInc2 = marketPointsRepository.getViewPointsPerContractMergedInc2();
+		marketPointsInc1and2.addAll(marketPointsInc2);
+		marketPointsInc1and2Totaal = marketPointsRepository.getViewPointsPerContractMergedInc1();
+		List<Object[]> marketPointsInc2Totaal = marketPointsRepository.getViewPointsPerContractMergedInc2();
+		marketPointsInc1and2Totaal.addAll(marketPointsInc2Totaal);
 		emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
 
 	}
+
+	
 
 	@Override
 	public void process() {
