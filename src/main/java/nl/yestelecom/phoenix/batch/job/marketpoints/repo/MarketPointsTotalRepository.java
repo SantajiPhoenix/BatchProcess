@@ -33,4 +33,48 @@ public interface MarketPointsTotalRepository  extends JpaRepository<MarketPoints
 			, nativeQuery=true)
 	List<Object[]> getMergedViewPointsTotal();
 	
+	@Query(value="select * from VIEW_POINTS_TOTAL ", nativeQuery=true)
+	List<MarketPointsTotal> getViewPointsTotalInc1();
+	
+	@Query(value="select * from VIEW_POINTS_PER_CONTRACT_INC2 ", nativeQuery=true)
+	List<MarketPointsTotal> getViewPointsTotalInc2();
+	
+	@Query(value="select * from (SELECT SUM(VOICE_POINTS) AS VOICE_POINTS, "
+			+ "SUM(DATA_POINTS)       AS DATA_POINTS, "
+			+ "SUM(PRODUCT_POINTS)    AS PRODUCT_POINTS, "
+			+ "SUM(USED_POINTS)       AS USED_POINTS, "
+			+ "SUM(TOTAL)            AS TOTAL, "
+			+ "SUM(GRAND_TOTAL)       AS GRAND_TOTAL, "
+			+ "CODE, "
+			+ "DEALER_NAME, "
+			+ "ACCOUNT_MANAGER "
+			+ "INCENTIVE "
+			+ "FROM VIEW_POINTS_TOTAL  "
+			+ "GROUP BY "
+			+ "CODE, "
+			+ "DEALER_NAME, "
+			+ "ACCOUNT_MANAGER, "
+			+ "INCENTIVE ) temptable" 
+			, nativeQuery=true)
+	List<Object[]> getMergedViewPointsTotalInc1();
+	
+	@Query(value="select * from (SELECT SUM(VOICE_POINTS) AS VOICE_POINTS, "
+			+ "SUM(DATA_POINTS)       AS DATA_POINTS, "
+			+ "SUM(PRODUCT_POINTS)    AS PRODUCT_POINTS, "
+			+ "SUM(USED_POINTS)       AS USED_POINTS, "
+			+ "SUM(TOTAL)            AS TOTAL, "
+			+ "SUM(GRAND_TOTAL)       AS GRAND_TOTAL, "
+			+ "CODE, "
+			+ "DEALER_NAME, "
+			+ "ACCOUNT_MANAGER "
+			+ "INCENTIVE "
+			+ "FROM VIEW_POINTS_TOTAL_INC2  "
+			+ "GROUP BY "
+			+ "CODE, "
+			+ "DEALER_NAME, "
+			+ "ACCOUNT_MANAGER, "
+			+ "INCENTIVE ) temptable" 
+			, nativeQuery=true)
+	List<Object[]> getMergedViewPointsTotalInc2();
+	
 }
