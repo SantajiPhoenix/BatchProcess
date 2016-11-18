@@ -30,10 +30,10 @@ public interface MarketPointsRepository extends JpaRepository<MarketPoints, Long
 			+ "CONTRACT_NR", nativeQuery=true)
 	List<Object []> getViewPointsPerContractMerged();
 	
-	@Query(value="select * from VIEW_POINTS_PER_CONTRACT", nativeQuery=true)
+	@Query(value="select rownum As ID, VOICE_POINTS, DATA_POINTS, PRODUCT_POINTS, CODE, DEALER_NAME, ACCOUNT_MANAGER, ACCEPTED_DATE, CONTRACT_NR  from VIEW_POINTS_PER_CONTRACT", nativeQuery=true)
 	List<MarketPoints> getViewPointsPerContractInc1();
 	
-	@Query(value="select * from VIEW_POINTS_PER_CONTRACT_INC2" , nativeQuery=true)
+	@Query(value="select rownum As ID, VOICE_POINTS, DATA_POINTS, PRODUCT_POINTS, CODE, DEALER_NAME, ACCOUNT_MANAGER, ACCEPTED_DATE, CONTRACT_NR  from VIEW_POINTS_PER_CONTRACT_INC2" , nativeQuery=true)
 	List<MarketPoints> getViewPointsPerContractInc2();
 	
 	

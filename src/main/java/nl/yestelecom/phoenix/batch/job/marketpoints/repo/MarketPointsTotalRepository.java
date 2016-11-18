@@ -33,10 +33,10 @@ public interface MarketPointsTotalRepository  extends JpaRepository<MarketPoints
 			, nativeQuery=true)
 	List<Object[]> getMergedViewPointsTotal();
 	
-	@Query(value="select * from VIEW_POINTS_TOTAL ", nativeQuery=true)
+	@Query(value="select rownum As ID,VOICE_POINTS, DATA_POINTS, PRODUCT_POINTS,USED_POINTS,TOTAL,GRAND_TOTAL,CODE, DEALER_NAME, ACCOUNT_MANAGER from VIEW_POINTS_TOTAL ", nativeQuery=true)
 	List<MarketPointsTotal> getViewPointsTotalInc1();
 	
-	@Query(value="select * from VIEW_POINTS_PER_CONTRACT_INC2 ", nativeQuery=true)
+	@Query(value="select rownum As ID,VOICE_POINTS, DATA_POINTS, PRODUCT_POINTS,USED_POINTS,TOTAL,GRAND_TOTAL,CODE, DEALER_NAME, ACCOUNT_MANAGER from VIEW_POINTS_TOTAL_INC2 ", nativeQuery=true)
 	List<MarketPointsTotal> getViewPointsTotalInc2();
 	
 	@Query(value="select * from (SELECT SUM(VOICE_POINTS) AS VOICE_POINTS, "
