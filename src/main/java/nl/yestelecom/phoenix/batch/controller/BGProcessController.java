@@ -11,6 +11,7 @@ import nl.yestelecom.phoenix.batch.job.marketpoints.MarketPointsProcess;
 import nl.yestelecom.phoenix.batch.job.preventel.PreventelProcess;
 import nl.yestelecom.phoenix.batch.job.scheduler.JobRunner;
 import nl.yestelecom.phoenix.batch.job.simoverview.SimOverviewProcess;
+import nl.yestelecom.phoenix.batch.job.vasrecon.VasReconProcess;
 
 @RestController
 @RequestMapping("/")
@@ -26,6 +27,8 @@ public class BGProcessController {
 	MarketPointsProcess marketPointsProcess;
 	@Autowired
 	PreventelProcess preventelProcess;
+	@Autowired
+	VasReconProcess vasReconProcess;
 	@Autowired
 	JobRunner jobRunner;
 
@@ -52,6 +55,11 @@ public class BGProcessController {
 	@RequestMapping(value = "/preventel", method = RequestMethod.GET)
 	public void runPreventelProcess() {
 		preventelProcess.execute();
+	}
+	
+	@RequestMapping(value = "/vasrecon", method = RequestMethod.GET)
+	public void runVasReconProcess() {
+		vasReconProcess.execute();
 	}
 
 	@RequestMapping(value = "/runAllJobs", method = RequestMethod.GET)
