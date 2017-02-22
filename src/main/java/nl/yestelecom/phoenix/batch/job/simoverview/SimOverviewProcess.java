@@ -22,168 +22,165 @@ import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
-public class SimOverviewProcess implements JobProcessor{
-	private static Logger logger = LoggerFactory.getLogger(SimOverviewProcess.class);
+public class SimOverviewProcess implements JobProcessor {
+    private static Logger logger = LoggerFactory.getLogger(SimOverviewProcess.class);
 
-	@Autowired
-	SimTypeCountRepository simTypeCountRepository;
-	
-	@Autowired
-	DealerHeadQuartersRepository dealerHeadQuartersRepository;
-	
-	@Autowired
-	SimOverviewFileFormat simOverviewFileFormat;
-	
-	@Autowired
-	SimOverviewCSVWriter simOverviewCSVWriter;
-	
-	@Autowired
-	WriteVisitor writerVisitorImpl;
-	
-	@Autowired
-	SimOverviewEmailSender simOverviewEmailSender;
-	
-	@Autowired
-	SimOverviewHelper simOverviewHelper;
-	
-	@Autowired
-	EmailDetailsRepo emailDetailsRepo;
-	@Autowired
-	ArchiveFileCreatorUtil archiveFileCreator;
-	
-	@Autowired
-	SenderVisitor senderVisitor;
-	
-	@Value("${simoverview.jobname}")
-	private String jobName;
-	@Value("${simoverview.filepath}")
-	private String fileDirecotry;
-	
-	List<SimTypeCount> simTypeCount ;
-	List<DealerHeadQuarters> dealerHQ;
-	List<SimTypeCount> yestelList;
-	List<Object[]> busPartnerList;
-	List<SimOverview> simOvewviewDataList;
-	EmailDetails emailDetails;
-	
-	@Override
-	public void read() {
-		logger.info("Read : "+getJobName());
-		
-		yestelList = simTypeCountRepository.getCountForYesTel();
-		System.out.println("size is >> "+yestelList.size());
-		
-		busPartnerList = simTypeCountRepository.getBusinessPartenerCount();
-		
-		
-		dealerHQ  = dealerHeadQuartersRepository.getDealersandMainDealers();
-		System.out.println("size is >> "+dealerHQ.get(0).getDlrId()+" >> "+dealerHQ.get(0).getDealerName());
-		
-		emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
-		
-	}
+    @Autowired
+    SimTypeCountRepository simTypeCountRepository;
 
-	@Override
-	public void process() {
-		logger.info("Process : "+getJobName());
-		processYesTelList();
-	}
+    @Autowired
+    DealerHeadQuartersRepository dealerHeadQuartersRepository;
 
-	private void processYesTelList() {
-		logger.info("Processeing YesTel List");
-		simOvewviewDataList = new ArrayList<SimOverview>();
-		SimOverview simOverviewYesTel = createYesTelSimCount();
-		SimOverview simOverviewbusPartner = createBusTelSimCount();
-		simOvewviewDataList.add(simOverviewYesTel);
-		simOvewviewDataList.add(simOverviewbusPartner);
-		for(DealerHeadQuarters delear : dealerHQ){
-			SimOverview simOverview = new SimOverview();
-			simOverview.setDealerName(delear.getDealerName());
-			simOverview.setMainDealerName(delear.getMainDealerName());
-			addSimTypeCount(delear, simOverview);
-			Long grossStock = simTypeCountRepository.getTotalSimxCountForDelaer(delear.getDlrId());
-			simOverview.setGrossStock(grossStock);
-		}
-	}
+    @Autowired
+    SimOverviewFileFormat simOverviewFileFormat;
 
-	private SimOverview createBusTelSimCount() {
-		logger.info("Processeing BusTel List");
-		SimOverview simOverview = new SimOverview();
-	
-		Long grossStock = new Long(0);
-		for (Object[] bp : busPartnerList) {
-			SimTypeCount simTypeCount = new SimTypeCount();
-			simTypeCount.setSimType(bp[0].toString());
-			simTypeCount.setCount(Long.valueOf(bp[1].toString()));
-			simOverview = simOverviewHelper.buildSimOverview(simTypeCount, simOverview);
-			if(SimOverviewConstants.BENODIGD.equals(simTypeCount.getSimType())){
-				simOverview.setNecessary(simTypeCount.getCount());
-			}
-		}
-		grossStock = simOverview.getY32KCount() + simOverview.getUSIMCount() + simOverview.getUSIMDUOCount();
-		simOverview.setGrossStock(grossStock);
-		simOverview.setNetStock(simOverview.getGrossStock()-simOverview.getNecessary());
-		simOverview.setMainDealerName("");
-		simOverview.setDealerName("Totaal bij Business Partners");
-		return simOverview;
-	}
+    @Autowired
+    SimOverviewCSVWriter simOverviewCSVWriter;
 
-	private SimOverview createYesTelSimCount() {
-		SimOverview simOverview = new SimOverview();
-		simOverview.setMainDealerName("");
-		simOverview.setDealerName("YES SERVICE PROVIDER");
-		for(SimTypeCount yesTel : yestelList){
-			simOverview = simOverviewHelper.buildSimOverview(yesTel, simOverview);
-			
-		}
-		
-		return simOverview;
-		
-	}
+    @Autowired
+    WriteVisitor writerVisitorImpl;
 
-	private void addSimTypeCount(DealerHeadQuarters delear, SimOverview simOverview ) {
-		List<SimTypeCount> simTypeCount = simTypeCountRepository.getTypeCount(delear.getDlrId());
-		for(SimTypeCount simType : simTypeCount){
-			if(delear.getDlrId().equals(simType.getDlrId())){
-				simOverview = simOverviewHelper.buildSimOverview(simType, simOverview);
-			}
-		}
-		simOvewviewDataList.add(simOverview);
-		
-	}
+    @Autowired
+    SimOverviewEmailSender simOverviewEmailSender;
 
-	@Override
-	public void write() {
-		logger.info("Write : "+getJobName());
-		String header = simOverviewFileFormat.createHeader();
-		simOverviewCSVWriter.setHeader(header);
-		List<String> simOverviewStringData = simOverviewHelper.simOverviewStringData(simOvewviewDataList);
-		simOverviewCSVWriter.setRowList(simOverviewStringData);
-		simOverviewCSVWriter.accept(writerVisitorImpl);
-		
-		
-	}
+    @Autowired
+    SimOverviewHelper simOverviewHelper;
 
-	@Override
-	public void send() {
-		logger.info("Send : "+getJobName());
-		simOverviewEmailSender.setEmailDetails(emailDetails);
-		simOverviewEmailSender.accept(senderVisitor);
-		
-	}
+    @Autowired
+    EmailDetailsRepo emailDetailsRepo;
+    @Autowired
+    ArchiveFileCreatorUtil archiveFileCreator;
 
-	@Override
-	public void postProcess() {
-		logger.info("Post Process : "+getJobName());
-		archiveFileCreator.setFileDirecotry(fileDirecotry);
-		archiveFileCreator.archiveCurrentFile();
-		
-	}
+    @Autowired
+    SenderVisitor senderVisitor;
 
-	@Override
-	public String getJobName() {
-		return jobName;
-		
-	}
+    @Value("${simoverview.jobname}")
+    private String jobName;
+    @Value("${simoverview.filepath}")
+    private String fileDirecotry;
+
+    List<DealerHeadQuarters> dealerHQ;
+    List<SimTypeCount> yestelList;
+    List<Object[]> busPartnerList;
+    List<SimOverview> simOvewviewDataList;
+    EmailDetails emailDetails;
+
+    @Override
+    public void read() {
+        logger.info("Read : " + getJobName());
+
+        yestelList = simTypeCountRepository.getCountForYesTel();
+        logger.debug("size is >> " + yestelList.size());
+
+        busPartnerList = simTypeCountRepository.getBusinessPartenerCount();
+
+        dealerHQ = dealerHeadQuartersRepository.getDealersandMainDealers();
+        logger.debug("size is >> " + dealerHQ.get(0).getDlrId() + " >> " + dealerHQ.get(0).getDealerName());
+
+        emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
+
+    }
+
+    @Override
+    public void process() {
+        logger.info("Process : " + getJobName());
+        processYesTelList();
+    }
+
+    private void processYesTelList() {
+        logger.info("Processeing YesTel List");
+        simOvewviewDataList = new ArrayList<>();
+        final SimOverview simOverviewYesTel = createYesTelSimCount();
+        final SimOverview simOverviewbusPartner = createBusTelSimCount();
+        simOvewviewDataList.add(simOverviewYesTel);
+        simOvewviewDataList.add(simOverviewbusPartner);
+        for (final DealerHeadQuarters delear : dealerHQ) {
+            final SimOverview simOverview = new SimOverview();
+            simOverview.setDealerName(delear.getDealerName());
+            simOverview.setMainDealerName(delear.getMainDealerName());
+            addSimTypeCount(delear, simOverview);
+            final Long grossStock = simTypeCountRepository.getTotalSimxCountForDelaer(delear.getDlrId());
+            simOverview.setGrossStock(grossStock);
+        }
+    }
+
+    private SimOverview createBusTelSimCount() {
+        logger.info("Processeing BusTel List");
+        SimOverview simOverview = new SimOverview();
+
+        Long grossStock;
+        for (final Object[] bp : busPartnerList) {
+            final SimTypeCount simTypeCountObj = new SimTypeCount();
+            simTypeCountObj.setSimType(bp[0].toString());
+            simTypeCountObj.setCount(Long.valueOf(bp[1].toString()));
+            simOverview = simOverviewHelper.buildSimOverview(simTypeCountObj, simOverview);
+            if (SimOverviewConstants.BENODIGD.equals(simTypeCountObj.getSimType())) {
+                simOverview.setNecessary(simTypeCountObj.getCount());
+            }
+        }
+        grossStock = simOverview.getY32KCount() + simOverview.getUSIMCount() + simOverview.getUSIMDUOCount();
+        simOverview.setGrossStock(grossStock);
+        simOverview.setNetStock(simOverview.getGrossStock() - simOverview.getNecessary());
+        simOverview.setMainDealerName("");
+        simOverview.setDealerName("Totaal bij Business Partners");
+        return simOverview;
+    }
+
+    private SimOverview createYesTelSimCount() {
+        SimOverview simOverview = new SimOverview();
+        simOverview.setMainDealerName("");
+        simOverview.setDealerName("YES SERVICE PROVIDER");
+        for (final SimTypeCount yesTel : yestelList) {
+            simOverview = simOverviewHelper.buildSimOverview(yesTel, simOverview);
+
+        }
+
+        return simOverview;
+
+    }
+
+    private void addSimTypeCount(DealerHeadQuarters delear, SimOverview simOverview) {
+        final List<SimTypeCount> simTypeCount = simTypeCountRepository.getTypeCount(delear.getDlrId());
+        for (final SimTypeCount simType : simTypeCount) {
+            if (delear.getDlrId().equals(simType.getDlrId())) {
+                simOverview = simOverviewHelper.buildSimOverview(simType, simOverview);
+            }
+        }
+        simOvewviewDataList.add(simOverview);
+
+    }
+
+    @Override
+    public void write() {
+        logger.info("Write : " + getJobName());
+        final String header = simOverviewFileFormat.createHeader();
+        simOverviewCSVWriter.setHeader(header);
+        final List<String> simOverviewStringData = simOverviewHelper.simOverviewStringData(simOvewviewDataList);
+        simOverviewCSVWriter.setRowList(simOverviewStringData);
+        simOverviewCSVWriter.accept(writerVisitorImpl);
+
+    }
+
+    @Override
+    public void send() {
+        logger.info("Send : " + getJobName());
+        simOverviewEmailSender.setEmailDetails(emailDetails);
+        simOverviewEmailSender.accept(senderVisitor);
+
+    }
+
+    @Override
+    public void postProcess() {
+        logger.info("Post Process : " + getJobName());
+        archiveFileCreator.setFileDirecotry(fileDirecotry);
+        archiveFileCreator.archiveCurrentFile();
+
+    }
+
+    @Override
+    public String getJobName() {
+        return jobName;
+
+    }
 
 }

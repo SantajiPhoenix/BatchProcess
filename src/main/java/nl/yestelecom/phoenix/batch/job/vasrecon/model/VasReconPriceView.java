@@ -25,7 +25,7 @@ public class VasReconPriceView {
     String chargeCode;
 
     @Column(name = "SERVICE_CODE")
-    String ServiceCode;
+    String serviceCode;
 
     @Column(name = "CODE")
     String code;
