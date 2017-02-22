@@ -14,39 +14,41 @@ import nl.yestelecom.phoenix.batch.writer.xml.XmlWriterUtil;
 
 @Service
 public class WriterVisitorImpl implements WriteVisitor {
-	
+
     @Autowired
-	CsvWriterUtil csvFileWriter;
+    CsvWriterUtil csvFileWriter;
 
-	@Autowired
-	private XmlWriterUtil xmlFileWriter;
-	
-	@Autowired
-	private TxtWriterUtil txtFileWriter;
+    @Autowired
+    private XmlWriterUtil xmlFileWriter;
 
-	private static Logger logger = LoggerFactory.getLogger(WriterVisitorImpl.class);
+    @Autowired
+    private TxtWriterUtil txtFileWriter;
 
+    private static Logger logger = LoggerFactory.getLogger(WriterVisitorImpl.class);
 
-	public void writeContent(CsvWriter csv) {
-		logger.info("Writing CSV File");
-		csvFileWriter.setFileProperties(csv.getFileName(), csv.getFilePath());
-		csvFileWriter.setHeader(csv.getHeader());
-		csvFileWriter.setListRowValue(csv.getRowList());
-		csvFileWriter.write();
-	}
+    @Override
+    public void writeContent(CsvWriter csv) {
+        logger.info("Writing CSV File");
+        csvFileWriter.setFileProperties(csv.getFileName(), csv.getFilePath());
+        csvFileWriter.setHeader(csv.getHeader());
+        csvFileWriter.setListRowValue(csv.getRowList());
+        csvFileWriter.write();
+    }
 
-	public void writeContent(XmlWriter xml) {
-		logger.info("Writing XML File");
-		xmlFileWriter.setFileProperties(xml.getFileName(), xml.getFilePath());
-		xmlFileWriter.setXmlData(xml.getXmlData());
-		xmlFileWriter.setTemplateName(xml.getTemplateName());
-		xmlFileWriter.generateXML();
-		xmlFileWriter.write();
-	}
-	
-	public void writeContent(TxtWriter txt) {
-		txtFileWriter.setFileProperties(txt.getFileName(), txt.getFilePath());
-		txtFileWriter.setListRowValue(txt.getRowList());
-		txtFileWriter.write();
-	}
+    @Override
+    public void writeContent(XmlWriter xml) {
+        logger.info("Writing XML File");
+        xmlFileWriter.setFileProperties(xml.getFileName(), xml.getFilePath());
+        xmlFileWriter.setXmlData(xml.getXmlData());
+        xmlFileWriter.setTemplateName(xml.getTemplateName());
+        xmlFileWriter.generateXML();
+        xmlFileWriter.write();
+    }
+
+    @Override
+    public void writeContent(TxtWriter txt) {
+        txtFileWriter.setFileProperties(txt.getFileName(), txt.getFilePath());
+        txtFileWriter.setListRowValue(txt.getRowList());
+        txtFileWriter.write();
+    }
 }
