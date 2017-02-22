@@ -19,86 +19,84 @@ import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
 public class CiotProcess implements JobProcessor {
-	private static Logger logger = LoggerFactory.getLogger(CiotProcess.class);
-	
+    private static Logger logger = LoggerFactory.getLogger(CiotProcess.class);
 
-	@Autowired
-	private CiotRepository ciotRepo;
-	@Autowired
-	private CiotXMLWriter ciotXmlWriter;
-	@Autowired
-	private CiotUtil ciotUtil;
-	@Autowired
-	private WriteVisitor writerVisitorImpl;
-	@Autowired
-	private CiotFTPSender ciotFTPSender;
-	@Autowired
-	private SenderVisitor senderVisitor;
-	@Autowired
-	private CiotEmailSender ciotEmailSender;
-	@Autowired
-	private ArchiveFileCreatorUtil archiveFileCreator;
-	
-	@Autowired
-	private EmailDetailsRepo emailDetailsRepo;
-	
-	@Value("${ciot.filePath}")
-	private String fileDirecotry;
-	@Value("${ciot.jobName}")
-	private String jobName;
+    @Autowired
+    private CiotRepository ciotRepo;
+    @Autowired
+    private CiotXMLWriter ciotXmlWriter;
+    @Autowired
+    private CiotUtil ciotUtil;
+    @Autowired
+    private WriteVisitor writerVisitorImpl;
+    @Autowired
+    private CiotFTPSender ciotFTPSender;
+    @Autowired
+    private SenderVisitor senderVisitor;
+    @Autowired
+    private CiotEmailSender ciotEmailSender;
+    @Autowired
+    private ArchiveFileCreatorUtil archiveFileCreator;
 
-	private List<Ciot> ciotData;
-	private String sequence;
-	private Map<String, Object> xmlData = new HashMap<>();
-	private EmailDetails emailDetails;
+    @Autowired
+    private EmailDetailsRepo emailDetailsRepo;
 
-	@Override
-	public void read() {
-		logger.info("Read : "+getJobName());
-		//ciotData = ciotRepo.findAll();
-		ciotData = ciotRepo.fetchOneData();
-		sequence = ciotRepo.generateFileSequence();
-		emailDetails= emailDetailsRepo.getEmailDetailsForJob(getJobName());
-	}
+    @Value("${ciot.filePath}")
+    private String fileDirecotry;
+    @Value("${ciot.jobName}")
+    private String jobName;
 
-	@Override
-	public void process() {
-		logger.info("Process : "+getJobName());
-		xmlData.put("abonneelist", ciotData);
-		sequence = ciotUtil.getDate() + sequence;
-	}
+    private List<Ciot> ciotData;
+    private String sequence;
+    private final Map<String, Object> xmlData = new HashMap<>();
+    private EmailDetails emailDetails;
 
-	@Override
-	public void write() {
-		logger.info("Write : "+getJobName());
-		ciotXmlWriter.setSequence(sequence);
-		ciotXmlWriter.setXmlData(xmlData);
-		ciotXmlWriter.accept(writerVisitorImpl);
-	}
+    @Override
+    public void read() {
+        logger.info("Read : " + getJobName());
+        ciotData = ciotRepo.findAll();
+        sequence = ciotRepo.generateFileSequence();
+        emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
+    }
 
-	@Override
-	public void send() {
-		logger.info("Send : "+getJobName());
-		ciotEmailSender.setEmailDetails(emailDetails);
-		ciotEmailSender.accept(senderVisitor);
-		
-		ciotFTPSender.setSequence(sequence);
-		ciotFTPSender.accept(senderVisitor);
-		
-	}
+    @Override
+    public void process() {
+        logger.info("Process : " + getJobName());
+        xmlData.put("abonneelist", ciotData);
+        sequence = ciotUtil.getDate() + sequence;
+    }
 
-	@Override
-	public void postProcess() {
-		logger.info("Post Process : "+getJobName());
-		archiveFileCreator.setFileDirecotry(fileDirecotry);
-		archiveFileCreator.archiveCurrentFile();
-		
-	}
+    @Override
+    public void write() {
+        logger.info("Write : " + getJobName());
+        ciotXmlWriter.setSequence(sequence);
+        ciotXmlWriter.setXmlData(xmlData);
+        ciotXmlWriter.accept(writerVisitorImpl);
+    }
 
-	@Override
-	public String getJobName() {
-		return jobName;
-		
-	}
+    @Override
+    public void send() {
+        logger.info("Send : " + getJobName());
+        ciotEmailSender.setEmailDetails(emailDetails);
+        ciotEmailSender.accept(senderVisitor);
+
+        ciotFTPSender.setSequence(sequence);
+        ciotFTPSender.accept(senderVisitor);
+
+    }
+
+    @Override
+    public void postProcess() {
+        logger.info("Post Process : " + getJobName());
+        archiveFileCreator.setFileDirecotry(fileDirecotry);
+        archiveFileCreator.archiveCurrentFile();
+
+    }
+
+    @Override
+    public String getJobName() {
+        return jobName;
+
+    }
 
 }

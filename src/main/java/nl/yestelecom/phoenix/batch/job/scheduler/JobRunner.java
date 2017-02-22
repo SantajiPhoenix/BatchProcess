@@ -21,74 +21,75 @@ import nl.yestelecom.phoenix.batch.job.simoverview.SimOverviewProcess;
 
 @Service
 public class JobRunner {
-	private static Logger logger = LoggerFactory.getLogger(JobRunner.class);
-	
-	@Autowired
-	CiotProcess ciotProcess;
-	
-	@Autowired
-	SimOverviewProcess simOverviewProcess;
-	
-	@Autowired
-	MarketPointsProcess marketPointsProcess;
-	
-	@Autowired
-	CreditControlProcess creditControlProcess;
-	
-	@Autowired
-	PreventelProcess preventelProcess;
-	
-	@Autowired
-	JobStatusRepo jobStatusRepo;
-	
-	List<JobProcessor> jobs = new ArrayList<JobProcessor>();
-	
-	public void addJobs(){
-		jobs.add(ciotProcess);
-		jobs.add(preventelProcess);
-		jobs.add(simOverviewProcess);
-		jobs.add(creditControlProcess);
-		jobs.add(marketPointsProcess);
-	}
-	
-	public List<JobProcessor> getJobs(){
-		return jobs;
-	}
-	
-	@Scheduled(cron="0 0 12 * * ? ")
-	public void runJobs(){
-		addJobs();
-		for(JobProcessor job : jobs){
-			JobStatus jobStatus = buildJobStaus(job, "RUNNING");
-			jobStatusRepo.save(jobStatus);
-			long startTime = System.nanoTime();
-			logger.info(" Starting >> "+job.getJobName());
-			try{
-				job.execute();
-				long endTime = System.nanoTime();
-				long duration = (endTime - startTime); 
-				jobStatus.setTimeTaken(duration);;
-				jobStatus.setStatus("SUCCESS");
-			}catch (Exception e){
-				long endTime = System.nanoTime();
-				long duration = (endTime - startTime); 
-				jobStatus.setTimeTaken(duration);;
-				jobStatus.setStatus("FAILED");
-				jobStatus.setError(e.getMessage());
-			}
-			logger.info(" FINISHED >> "+job.getJobName());
-			jobStatusRepo.save(jobStatus);
-		}
-	}
+    private static Logger logger = LoggerFactory.getLogger(JobRunner.class);
 
-	private JobStatus buildJobStaus(JobProcessor job, String status) {
-		JobStatus jobStatus = new JobStatus();
-		jobStatus.setError("");
-		jobStatus.setJobDate( new java.sql.Date(Calendar.getInstance().getTime().getTime()));
-		jobStatus.setJobName(job.getJobName());
-		jobStatus.setStatus(status);
-		
-		return jobStatus;
-	}
+    @Autowired
+    CiotProcess ciotProcess;
+
+    @Autowired
+    SimOverviewProcess simOverviewProcess;
+
+    @Autowired
+    MarketPointsProcess marketPointsProcess;
+
+    @Autowired
+    CreditControlProcess creditControlProcess;
+
+    @Autowired
+    PreventelProcess preventelProcess;
+
+    @Autowired
+    JobStatusRepo jobStatusRepo;
+
+    List<JobProcessor> jobs = new ArrayList<>();
+
+    public void addJobs() {
+        jobs.add(ciotProcess);
+        jobs.add(preventelProcess);
+        jobs.add(simOverviewProcess);
+        jobs.add(creditControlProcess);
+        jobs.add(marketPointsProcess);
+    }
+
+    public List<JobProcessor> getJobs() {
+        return jobs;
+    }
+
+    @Scheduled(cron = "0 0 12 * * ? ")
+    public void runJobs() {
+        addJobs();
+        for (final JobProcessor job : jobs) {
+            final JobStatus jobStatus = buildJobStaus(job, "RUNNING");
+            jobStatusRepo.save(jobStatus);
+            final long startTime = System.nanoTime();
+            logger.info(" Starting >> " + job.getJobName());
+            try {
+                job.execute();
+                final long endTime = System.nanoTime();
+                final long duration = endTime - startTime;
+                jobStatus.setTimeTaken(duration);
+                jobStatus.setStatus("SUCCESS");
+            } catch (final Exception e) {
+                final long endTime = System.nanoTime();
+                final long duration = endTime - startTime;
+                jobStatus.setTimeTaken(duration);
+                jobStatus.setStatus("FAILED");
+                jobStatus.setError(e.getMessage());
+                logger.error(e.getMessage(), e);
+            }
+            logger.info(" FINISHED >> " + job.getJobName());
+            jobStatusRepo.save(jobStatus);
+        }
+    }
+
+    private JobStatus buildJobStaus(JobProcessor job, String status) {
+        final JobStatus jobStatus = new JobStatus();
+        jobStatus.setError("");
+        jobStatus.setJobDate(new java.sql.Date(Calendar.getInstance().getTime().getTime()));
+        jobStatus.setJobName(job.getJobName());
+        jobStatus.setStatus(status);
+
+        return jobStatus;
+    }
 
 }

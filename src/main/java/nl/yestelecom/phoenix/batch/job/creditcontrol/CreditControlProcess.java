@@ -18,82 +18,85 @@ import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
 public class CreditControlProcess implements JobProcessor {
-	private static Logger logger = LoggerFactory.getLogger(CreditControlProcess.class);
+    private static Logger logger = LoggerFactory.getLogger(CreditControlProcess.class);
 
-	@Autowired
-	CreditControlCSVWriter creditControlcsvWriter;
+    @Autowired
+    CreditControlCSVWriter creditControlcsvWriter;
 
-	@Autowired
-	WriteVisitor writerVisitorImpl;
+    @Autowired
+    WriteVisitor writerVisitorImpl;
 
-	@Autowired
-	SenderVisitor senderVisitor;
+    @Autowired
+    SenderVisitor senderVisitor;
 
-	@Autowired
-	CreditControlFTPSender creditControlFTPSender;
+    @Autowired
+    CreditControlFTPSender creditControlFTPSender;
 
-	@Autowired
-	CreditControlRepository creditControlRepository;
-	
-	@Autowired
-	CreditControlEmailSender creditControlEmailSender;
-	
-	@Autowired
-	EmailDetailsRepo emailDetailsRepo;
-	
-	@Autowired
-	ArchiveFileCreatorUtil archiveFileCreator;
+    @Autowired
+    CreditControlRepository creditControlRepository;
 
-	
-	@Value("${creditcontrol.jobname}")
-	private String jobName;
-	@Value("${creditcontrol.filePath}")
-	private String fileDirecotry;
+    @Autowired
+    CreditControlEmailSender creditControlEmailSender;
 
-	List<CreditControl> creditControl;
+    @Autowired
+    EmailDetailsRepo emailDetailsRepo;
 
-	List<String> ccList;
-	EmailDetails emailDetails;
+    @Autowired
+    ArchiveFileCreatorUtil archiveFileCreator;
 
-	public void read() {
-		logger.info("Read : "+getJobName());
-		creditControl = creditControlRepository.findAll();
-		emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
-	}
+    @Value("${creditcontrol.jobname}")
+    private String jobName;
+    @Value("${creditcontrol.filePath}")
+    private String fileDirecotry;
 
-	public void process() {
-		logger.info("Process : "+getJobName());
-		ccList = new ArrayList<String>();
-		for (CreditControl cc : creditControl) {
-			ccList.add(cc.toString());
-		}
-	}
+    List<CreditControl> creditControl;
 
-	public void write() {
-		logger.info("Write : "+getJobName());
-		creditControlcsvWriter.setRowList(ccList);
-		creditControlcsvWriter.accept(writerVisitorImpl);
-	}
+    List<String> ccList;
+    EmailDetails emailDetails;
 
-	public void send() {
-		logger.info("Send : "+getJobName());
-		creditControlEmailSender.setEmailDetails(emailDetails);
-		creditControlEmailSender.accept(senderVisitor);
-		creditControlFTPSender.accept(senderVisitor);
-	}
+    @Override
+    public void read() {
+        logger.info("Read : " + getJobName());
+        creditControl = creditControlRepository.findAll();
+        emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
+    }
 
-	@Override
-	public void postProcess() {
-		logger.info("Post Process : "+getJobName());
-		archiveFileCreator.setFileDirecotry(fileDirecotry);
-		archiveFileCreator.archiveCurrentFile();;
-		
-	}
+    @Override
+    public void process() {
+        logger.info("Process : " + getJobName());
+        ccList = new ArrayList<>();
+        for (final CreditControl cc : creditControl) {
+            ccList.add(cc.toString());
+        }
+    }
 
-	@Override
-	public String getJobName() {
-		return jobName;
-		
-	}
+    @Override
+    public void write() {
+        logger.info("Write : " + getJobName());
+        creditControlcsvWriter.setRowList(ccList);
+        creditControlcsvWriter.accept(writerVisitorImpl);
+    }
+
+    @Override
+    public void send() {
+        logger.info("Send : " + getJobName());
+        creditControlEmailSender.setEmailDetails(emailDetails);
+        creditControlEmailSender.accept(senderVisitor);
+        creditControlFTPSender.accept(senderVisitor);
+    }
+
+    @Override
+    public void postProcess() {
+        logger.info("Post Process : " + getJobName());
+        archiveFileCreator.setFileDirecotry(fileDirecotry);
+        archiveFileCreator.archiveCurrentFile();
+
+    }
+
+    @Override
+    public String getJobName() {
+        return jobName;
+
+    }
 
 }
