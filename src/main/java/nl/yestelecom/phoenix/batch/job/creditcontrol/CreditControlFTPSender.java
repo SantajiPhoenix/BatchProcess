@@ -9,60 +9,66 @@ import nl.yestelecom.phoenix.batch.sender.ftp.FTPSender;
 @Service
 public class CreditControlFTPSender implements FTPSender {
 
-	@Value("${creditcontrol.ftp.host}")
-	private String sftpHost;
-	@Value("${creditcontrol.ftp.port}")
-	private int sftpPort;
-	@Value("${creditcontrol.ftp.username}")
-	private String username;
-	@Value("${creditcontrol.ftp.password}")
-	private String password;
-	@Value("${creditcontrol.ftp.privateKey}")
-	private String privateKey;
-	@Value("${creditcontrol.fileName}")
-	private String fileName;
-	@Value("${creditcontrol.filePath}")
-	private String filePath;
-	@Value("${creditcontrol.ftp.remoteDirectory}")
-	private String remoteDirectory;
+    @Value("${creditcontrol.ftp.host}")
+    private String sftpHost;
+    @Value("${creditcontrol.ftp.port}")
+    private int sftpPort;
+    @Value("${creditcontrol.ftp.username}")
+    private String username;
+    @Value("${creditcontrol.ftp.password}")
+    private String password;
+    @Value("${creditcontrol.ftp.privateKey}")
+    private String privateKey;
+    @Value("${creditcontrol.fileName}")
+    private String fileName;
+    @Value("${creditcontrol.filePath}")
+    private String filePath;
+    @Value("${creditcontrol.ftp.remoteDirectory}")
+    private String remoteDirectory;
 
-	public String getSftpHost() {
-		return sftpHost;
-	}
+    @Override
+    public String getSftpHost() {
+        return sftpHost;
+    }
 
-	public int getSftpPort() {
-		return sftpPort;
-	}
+    @Override
+    public int getSftpPort() {
+        return sftpPort;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    @Override
+    public String getUsername() {
+        return username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
-	public String getPrivateKey() {
-		return privateKey;
-	}
+    @Override
+    public String getPrivateKey() {
+        return privateKey;
+    }
 
-	public String getRemoteDirectory() {
-		return remoteDirectory;
-	}
+    @Override
+    public String getRemoteDirectory() {
+        return remoteDirectory;
+    }
 
-	@Override
-	public void accept(SenderVisitor visitor) {
-		visitor.sendContent(this);
-	}
+    @Override
+    public void accept(SenderVisitor visitor) {
+        visitor.sendContent(this);
+    }
 
-	@Override
-	public String getFileName() {
-		return fileName;
-	}
+    @Override
+    public String getFileName() {
+        return fileName;
+    }
 
-	@Override
-	public String getFilePath() {
-		return filePath;
-	}
+    @Override
+    public String getFilePath() {
+        return filePath;
+    }
 
 }
