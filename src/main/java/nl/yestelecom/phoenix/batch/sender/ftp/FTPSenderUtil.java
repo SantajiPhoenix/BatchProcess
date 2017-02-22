@@ -73,32 +73,32 @@ public class FTPSenderUtil {
 
     public void transferFile(String fileName, String filePath, String remoteDirectory) {
         ChannelSftp channelSftp = null;
+        FileInputStream inputStream = null;
         logger.info("Sening file");
         try {
             channelSftp = (ChannelSftp) channel;
             channelSftp.cd(remoteDirectory);
             final File f = new File(filePath + fileName);
-            final FileInputStream inputStream = new FileInputStream(f);
+            inputStream = new FileInputStream(f);
             channelSftp.put(inputStream, f.getName());
             logger.info("File Sent");
-            if (inputStream != null) {
-                inputStream.close();
-            }
 
         } catch (SftpException | FileNotFoundException e) {
             logger.error(e.getMessage(), e);
-        } catch (final IOException e) {
-            logger.error(e.getMessage(), e);
         } finally {
-            if (null != channelSftp) {
-                channelSftp.disconnect();
-                channelSftp.exit();
-            }
-            if (channel != null) {
-                channel.disconnect();
-            }
-            if (session != null) {
-                session.disconnect();
+
+            channelSftp.disconnect();
+            channelSftp.exit();
+
+            channel.disconnect();
+
+            session.disconnect();
+            try {
+                if (null != inputStream) {
+                    inputStream.close();
+                }
+            } catch (final IOException e) {
+                logger.error(e.getMessage(), e);
             }
 
         }

@@ -10,52 +10,52 @@ import nl.yestelecom.phoenix.batch.writer.csv.CsvWriter;
 
 @Service
 public class SimOverviewCSVWriter implements CsvWriter {
-	
-	@Value("${simoverview.filepath}")
-	private String fileDirecotry;
 
-	@Value("${simoverview.filename}")
-	private String fileName;
-	
-	String header;
-	List<String> rows;
+    @Value("${simoverview.filepath}")
+    private String fileDirecotry;
 
-	@Override
-	public String getHeader() {
-		// TODO Auto-generated method stub
-		return header;
-	}
+    @Value("${simoverview.filename}")
+    private String fileName;
 
-	@Override
-	public String getFilePath() {
-		// TODO Auto-generated method stub
-		return fileDirecotry;
-	}
+    String header;
+    List<String> rows;
 
-	@Override
-	public String getFileName() {
-		// TODO Auto-generated method stub
-		return fileName;
-	}
+    @Override
+    public String getHeader() {
 
-	@Override
-	public List<String> getRowList() {
-		// TODO Auto-generated method stub
-		return rows;
-	}
-	
-	public void setRowList(List<String> rows) {
-		this.rows = rows;
-	}
+        return header;
+    }
 
-	@Override
-	public void accept(WriteVisitor visitor) {
-		visitor.writeContent(this);
-		
-	}
-	
-	public void setHeader(String header){
-		this.header = header;
-	}
+    @Override
+    public String getFilePath() {
+
+        return fileDirecotry;
+    }
+
+    @Override
+    public String getFileName() {
+
+        return fileName;
+    }
+
+    @Override
+    public List<String> getRowList() {
+
+        return rows;
+    }
+
+    public void setRowList(List<String> rows) {
+        this.rows = rows;
+    }
+
+    @Override
+    public void accept(WriteVisitor visitor) {
+        visitor.writeContent(this);
+
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
 
 }
