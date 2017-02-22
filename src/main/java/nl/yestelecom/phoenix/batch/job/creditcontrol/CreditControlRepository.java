@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 public interface CreditControlRepository extends JpaRepository<CreditControl, String> {
+    @Override
 	public List<CreditControl> findAll();
 
 }

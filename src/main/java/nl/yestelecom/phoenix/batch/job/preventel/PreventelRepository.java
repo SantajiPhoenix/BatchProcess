@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface PreventelRepository extends JpaRepository<Preventel, String> {
-
+    @Override
 	public List<Preventel> findAll();
 
-	@Query(value = "select * from V_PREVENTEL where RELATIEIDENTIFICATIE between '1001041             ' and '1001201             '", nativeQuery = true)
+    @Query(value = "select * from V_PREVENTEL where RELATIEIDENTIFICATIE between '1001041             ' and '1001201             '", nativeQuery = true)
     public List<Preventel> fetchOneData();
 
 }
