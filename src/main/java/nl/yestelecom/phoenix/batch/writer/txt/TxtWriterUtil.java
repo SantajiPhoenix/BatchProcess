@@ -21,35 +21,28 @@ public class TxtWriterUtil {
     public void write() {
 
         final File file = new File(filePath + fileName);
-        FileWriter fileWriter = null;
-        BufferedWriter bufferWritter = null;
+        boolean fileCreated = false;
         try {
             if (!file.exists()) {
-                file.createNewFile();
+                fileCreated = file.createNewFile();
             }
-            fileWriter = new FileWriter(file.getAbsoluteFile());
-            bufferWritter = new BufferedWriter(fileWriter);
+        } catch (final IOException e) {
+            logger.error("Error while file creation " + e);
+        }
+        try (BufferedWriter bufferWritter = new BufferedWriter(new FileWriter(file.getAbsoluteFile()))) {
             for (final String val : rowValue) {
                 bufferWritter.write(val);
                 bufferWritter.newLine();
             }
-
+            logger.info("Finished Write");
         } catch (final IOException e) {
-            logger.error(e.getMessage(), e);
-
-        } finally {
-            try {
-                if (null != bufferWritter) {
-                    bufferWritter.close();
-                }
-                if (null != fileWriter) {
-                    fileWriter.close();
-                }
-            } catch (final IOException e) {
-                logger.error(e.getMessage(), e);
-
-            }
+            logger.error("Error while writing file >> " + e);
         }
+        /*
+         * try { if (!file.exists()) { file.createNewFile(); } fileWriter = new FileWriter(file.getAbsoluteFile()); bufferWritter = new BufferedWriter(fileWriter); for (final String val : rowValue) {
+         * bufferWritter.write(val); bufferWritter.newLine(); } } catch (final IOException e) { logger.error(e.getMessage(), e); } finally { try { if (null != bufferWritter) { bufferWritter.close(); }
+         * if (null != fileWriter) { fileWriter.close(); } } catch (final IOException e) { logger.error(e.getMessage(), e); } }
+         */
     }
 
     public void setListRowValue(List<String> rowValue) {

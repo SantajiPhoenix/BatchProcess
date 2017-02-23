@@ -38,30 +38,25 @@ public class XmlWriterUtil {
     public void write() {
 
         final File file = new File(filePath + fileName);
-        FileWriter fileWriter = null;
-        BufferedWriter bufferWritter = null;
+        boolean fileCreated = false;
         try {
             if (!file.exists()) {
-                file.createNewFile();
+                fileCreated = file.createNewFile();
             }
-            fileWriter = new FileWriter(file.getAbsoluteFile());
-            bufferWritter = new BufferedWriter(fileWriter);
+        } catch (final IOException e) {
+            logger.error("Error while file creation " + e);
+        }
+        try (BufferedWriter bufferWritter = new BufferedWriter(new FileWriter(file.getAbsoluteFile()))) {
             bufferWritter.write(xmlContent);
             logger.info("Finished Write");
         } catch (final IOException e) {
             logger.error("Error while writing file >> " + e);
-        } finally {
-            try {
-                if (null != bufferWritter) {
-                    bufferWritter.close();
-                }
-                if (null != fileWriter) {
-                    fileWriter.close();
-                }
-            } catch (final IOException e) {
-                logger.error("Error while closing buffer writers >> " + e);
-            }
         }
+        /*
+         * try { if (!file.exists()) { file.createNewFile(); } fileWriter = new FileWriter(file.getAbsoluteFile()); bufferWritter = new BufferedWriter(fileWriter); bufferWritter.write(xmlContent);
+         * logger.info("Finished Write"); } catch (final IOException e) { logger.error("Error while writing file >> " + e); } finally { try { if (null != bufferWritter) { bufferWritter.close(); } if
+         * (null != fileWriter) { fileWriter.close(); } } catch (final IOException e) { logger.error("Error while closing buffer writers >> " + e); } }
+         */
     }
 
     public void setTemplateName(String templateName) {

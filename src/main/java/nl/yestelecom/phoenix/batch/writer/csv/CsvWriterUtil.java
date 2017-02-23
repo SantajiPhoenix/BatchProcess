@@ -28,7 +28,8 @@ public class CsvWriterUtil {
     public void writeCSVData() {
         CSVWriter writer;
         try {
-            writer = new CSVWriter(new FileWriter(filePath + fileName), delimiter);
+            final FileWriter fileWriter = new FileWriter(filePath + fileName);
+            writer = new CSVWriter(fileWriter, delimiter);
             final String[] head = header.split(",");
             writer.writeNext(head);
             for (final String val : rowValue) {
@@ -36,6 +37,7 @@ public class CsvWriterUtil {
                 writer.writeNext(entries);
             }
             logger.info("Finished Write");
+            fileWriter.close();
             writer.close();
         } catch (final IOException e) {
             logger.error(e.getMessage(), e);
