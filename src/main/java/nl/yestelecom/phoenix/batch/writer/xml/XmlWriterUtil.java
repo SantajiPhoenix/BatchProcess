@@ -42,6 +42,7 @@ public class XmlWriterUtil {
         try {
             if (!file.exists()) {
                 fileCreated = file.createNewFile();
+                logger.info("File created " + fileCreated);
             }
         } catch (final IOException e) {
             logger.error("Error while file creation " + e);
@@ -52,11 +53,7 @@ public class XmlWriterUtil {
         } catch (final IOException e) {
             logger.error("Error while writing file >> " + e);
         }
-        /*
-         * try { if (!file.exists()) { file.createNewFile(); } fileWriter = new FileWriter(file.getAbsoluteFile()); bufferWritter = new BufferedWriter(fileWriter); bufferWritter.write(xmlContent);
-         * logger.info("Finished Write"); } catch (final IOException e) { logger.error("Error while writing file >> " + e); } finally { try { if (null != bufferWritter) { bufferWritter.close(); } if
-         * (null != fileWriter) { fileWriter.close(); } } catch (final IOException e) { logger.error("Error while closing buffer writers >> " + e); } }
-         */
+
     }
 
     public void setTemplateName(String templateName) {

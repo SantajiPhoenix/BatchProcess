@@ -26,29 +26,32 @@ public class PreventelEncodedFileSender {
     private String privateKey;
     @Value("${preventel.fileName}")
     private String fileName;
+    @Value("${preventel.env}")
+    private String env;
 
     private String sequence;
-    private String remoteFileName;
 
     public void fileEncoderAndSender() {
         BufferedReader stdInput = null;
         BufferedReader stdError = null;
         String data = null;
+        final String currentEnv = "TEST";
 
         try {
             final String[] shell = { "/bin/bash" };
             final String commandTest1 = "scp " + filePath + " " + remoteFilePath;
-            final String[] commands = { commandTest1 };
+            final String[] commandsTest = { commandTest1 };
+            Process p;
 
-            // Commands for Encoding and sending Preventel in production
+            final String command1 = "gpg -o " + filePath + getFileName() + " --recipient " + privateKey + " -ea --trust-model always " + filePath + getRemoteFileName();
+            final String command2 = "scp " + filePath + getFileName() + " " + userName + "@" + host + ":" + remoteFilePath + getRemoteFileName();
+            final String[] commandsProd = { command1, command2 };
 
-            // String command1 = "gpg -o " + filePath + getFileName() + " --recipient " + privateKey
-            // + " -ea --trust-model always " + filePath + getRemoteFileName();
-            // String command2 = "scp " + filePath + getFileName() + " " + userName + "@" + host + ":" + remoteFilePath
-            // + getRemoteFileName();
-            // String commands[] = { command1, command2 };
-
-            final Process p = Runtime.getRuntime().exec(commands, shell);
+            if (env.equalsIgnoreCase(currentEnv)) {
+                p = Runtime.getRuntime().exec(commandsTest, shell);
+            } else {
+                p = Runtime.getRuntime().exec(commandsProd, shell);
+            }
 
             stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -79,8 +82,8 @@ public class PreventelEncodedFileSender {
     }
 
     public String getRemoteFileName() {
-        remoteFileName = fileName + ".txt.gpg";
-        return remoteFileName;
+        return fileName + ".txt.gpg";
+
     }
 
 }
