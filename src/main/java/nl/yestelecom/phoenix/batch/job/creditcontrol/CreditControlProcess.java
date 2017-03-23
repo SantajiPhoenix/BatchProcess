@@ -68,7 +68,9 @@ public class CreditControlProcess implements JobProcessor {
         logger.info("Process : " + getJobName());
         ccList = new ArrayList<>();
         for (final CreditControl cc : creditControl) {
-            ccList.add(cc.toString());
+            if (cc != null) {
+                ccList.add(cc.toString());
+            }
         }
     }
 
