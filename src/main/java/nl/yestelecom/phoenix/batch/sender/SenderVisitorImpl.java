@@ -36,7 +36,7 @@ public class SenderVisitorImpl implements SenderVisitor {
     public void sendContent(EmailSender email) {
         try {
             logger.info("SENDING MAIL ");
-            mailSenderUtil.sendMail(email.getEmailTo(), email.getEmailFrom(), email.getFilePath(), email.getSubject(), email.getText());
+            mailSenderUtil.sendMail(email.getEmailTo(), email.getEmailFrom(), email.getFilePath(), email.getSubject(), email.getText(), email.getAttachFile());
         } catch (final Exception e) {
             logger.error(e.getMessage(), e);
         }

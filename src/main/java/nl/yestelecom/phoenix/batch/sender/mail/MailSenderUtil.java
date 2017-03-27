@@ -23,7 +23,7 @@ public class MailSenderUtil {
 
     private static Logger logger = LoggerFactory.getLogger(MailSenderUtil.class);
 
-    public void sendMail(String emailTo, String emailFrom, String path, String subject, String text) throws MessagingException {
+    public void sendMail(String emailTo, String emailFrom, String path, String subject, String text, String attachFile) throws MessagingException {
         final SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         final MimeMessage message = mailSender.createMimeMessage();
         simpleMailMessage.setFrom(emailFrom);
@@ -36,18 +36,18 @@ public class MailSenderUtil {
         helper.setTo(simpleMailMessage.getTo());
         helper.setSubject(simpleMailMessage.getSubject());
         helper.setText(text);
+        if ("TRUE".equals(attachFile)) {
+            final File folder = new File(path);
+            final File[] listOfFiles = folder.listFiles();
+            for (final File file : listOfFiles) {
+                if (file.isFile()) {
+                    helper.addAttachment(file.getName(), file);
+                } else if (file.isDirectory()) {
+                    logger.info("It is a direcory");
+                }
 
-        final File folder = new File(path);
-        final File[] listOfFiles = folder.listFiles();
-        for (final File listOfFile : listOfFiles) {
-            if (listOfFile.isFile()) {
-                helper.addAttachment(listOfFile.getName(), listOfFile);
-            } else if (listOfFile.isDirectory()) {
-                logger.info("It is a direcory");
             }
-
         }
-
         mailSender.send(message);
         logger.info("Mail sent");
 

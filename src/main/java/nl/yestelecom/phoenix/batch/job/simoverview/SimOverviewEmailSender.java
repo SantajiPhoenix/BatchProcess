@@ -10,79 +10,85 @@ import nl.yestelecom.phoenix.batch.sender.email.EmailSender;
 
 @Service
 @Configuration
-public class SimOverviewEmailSender implements EmailSender{
+public class SimOverviewEmailSender implements EmailSender {
 
-	String text;
-	String emailFrom;
-	String emailTo;
-	String subject;
-	
-	@Value("${simoverview.filepath}")
-	private String fileDirecotry;
+    String text;
+    String emailFrom;
+    String emailTo;
+    String subject;
+    String attachFile;
 
-	@Override
-	public void accept(SenderVisitor visitor) {
-		visitor.sendContent(this);
-	}
+    @Value("${simoverview.filepath}")
+    private String fileDirecotry;
 
-	@Override
-	public String getFilePath() {
-		return fileDirecotry;
-	}
+    @Override
+    public void accept(SenderVisitor visitor) {
+        visitor.sendContent(this);
+    }
 
-	@Override
-	public String getEmailTo() {
-		return emailTo;
-	}
+    @Override
+    public String getFilePath() {
+        return fileDirecotry;
+    }
 
-	@Override
-	public String getEmailFrom() {
-		return emailFrom;
-	}
+    @Override
+    public String getEmailTo() {
+        return emailTo;
+    }
 
-	@Override
-	public String getSubject() {
-		return subject;
-	}
+    @Override
+    public String getEmailFrom() {
+        return emailFrom;
+    }
 
-	@Override
-	public String getText() {
-		return text;
-	}
+    @Override
+    public String getSubject() {
+        return subject;
+    }
 
+    @Override
+    public String getText() {
+        return text;
+    }
 
+    public void setEmailTo(String emailTo) {
+        this.emailTo = emailTo;
 
-	public void setEmailTo(String emailTo) {
-		this.emailTo= emailTo;
-		
-	}
+    }
 
-	
-	public void setEmailFrom(String emailFrom) {
-		this.emailFrom = emailFrom;
-		
-	}
+    public void setEmailFrom(String emailFrom) {
+        this.emailFrom = emailFrom;
 
-	
-	public void setSubject(String subject) {
-		this.subject = subject;
-		
-	}
+    }
 
-	
-	public void setText(String text) {
-		this.text = text;
-		
-	}
+    public void setSubject(String subject) {
+        this.subject = subject;
 
-	@Override
-	public void setEmailDetails(EmailDetails emailDetails) {
-		text = emailDetails.getText();
-		subject = emailDetails.getSubject();
-		emailFrom = emailDetails.getEmailFrom();
-		emailTo = emailDetails.getEmailTo();
-		
-		
-	}
+    }
+
+    public void setText(String text) {
+        this.text = text;
+
+    }
+
+    @Override
+    public void setEmailDetails(EmailDetails emailDetails) {
+        text = emailDetails.getText();
+        subject = emailDetails.getSubject();
+        emailFrom = emailDetails.getEmailFrom();
+        emailTo = emailDetails.getEmailTo();
+        attachFile = emailDetails.getAttachFile();
+
+    }
+
+    public void setAttachFile(String attachFile) {
+        this.attachFile = attachFile;
+
+    }
+
+    @Override
+    public String getAttachFile() {
+        return attachFile;
+    }
 
 }

@@ -7,16 +7,16 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Data
-@Table(name="BP_EMAIL_DETAILS")
+@Table(name = "BP_EMAIL_DETAILS")
 @Entity
 public class EmailDetails {
-	@Id
-	Long id;
-	String emailFrom;
-	String emailTo;
-	String subject;
-	String jobName;
-	String text;
-	
+    @Id
+    Long id;
+    String emailFrom;
+    String emailTo;
+    String subject;
+    String jobName;
+    String text;
+    String attachFile;
 
 }
