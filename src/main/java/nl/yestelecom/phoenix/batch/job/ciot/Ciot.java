@@ -12,38 +12,37 @@ import lombok.Data;
 @Data
 public class Ciot {
 
-	@Column(name = "SERVICE_PROVIDER")
-	private String serviceProvider;
+    @Column(name = "SERVICE_PROVIDER")
+    private String serviceProvider;
 
-	@Column(name = "ACHTERNAAM")
-	private String lastName;
+    @Column(name = "ACHTERNAAM")
+    private String lastName;
 
-	@Column(name = "VOORVOEGSEL")
-	private String prefix;
+    @Column(name = "VOORVOEGSEL")
+    private String prefix;
 
-	@Column(name = "VOORLETTERS")
-	private String initials;
+    @Column(name = "VOORLETTERS")
+    private String initials;
 
-	@Column(name = "STRAATNAAM")
-	private String streetName;
+    @Column(name = "STRAATNAAM")
+    private String streetName;
 
-	@Column(name = "HUISNUMMER")
-	private int houseNumber;
+    @Column(name = "HUISNUMMER")
+    private Integer houseNumber;
 
-	@Column(name = "POSTCODE")
-	private String postCode;
+    @Column(name = "POSTCODE")
+    private String postCode;
 
-	@Column(name = "WOONPLAATS")
-	private String residence;
+    @Column(name = "WOONPLAATS")
+    private String residence;
 
-	@Column(name = "SOORTVERBINDING")
-	private String linkType;
+    @Column(name = "SOORTVERBINDING")
+    private String linkType;
 
-	@Column(name = "GENERATIEDATUM")
-	private String generatedDate;
+    @Column(name = "GENERATIEDATUM")
+    private String generatedDate;
 
-	@Id
-	@Column(name = "TELEFOONNUMMER")
-	private Long telephoneNumber;
+    @Id
+    @Column(name = "TELEFOONNUMMER")
+    private Long telephoneNumber;
 }
-
