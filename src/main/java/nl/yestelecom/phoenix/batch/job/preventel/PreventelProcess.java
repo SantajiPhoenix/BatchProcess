@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.archiver.ArchiveFileCreatorUtil;
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
+import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
+import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
+import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
@@ -30,6 +33,12 @@ public class PreventelProcess implements JobProcessor {
     private PreventelEncodedFileSender preventelEncodedFileSender;
     @Autowired
     private ArchiveFileCreatorUtil archiveFileCreator;
+    @Autowired
+    private PreventelEmailSender preventelEmailSender;
+    @Autowired
+    private EmailDetailsRepo emailDetailsRepo;
+    @Autowired
+    private SenderVisitor senderVisitor;
 
     @Value("${preventel.fileName}")
     private String fileName;
@@ -41,11 +50,13 @@ public class PreventelProcess implements JobProcessor {
     private List<Preventel> preventelList;
     private List<String> preventelDataList;
     private String sequence;
+    private EmailDetails emailDetails;
 
     @Override
     public void read() {
         logger.info("Read : " + getJobName());
         preventelList = preventelRepo.findAll();
+        emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
 
     }
 
@@ -79,6 +90,9 @@ public class PreventelProcess implements JobProcessor {
     @Override
     public void send() {
         logger.info("Send : " + getJobName());
+        preventelEmailSender.setEmailDetails(emailDetails);
+        preventelEmailSender.accept(senderVisitor);
+
         preventelEncodedFileSender.setSequence(sequence);
         preventelEncodedFileSender.fileEncoderAndSender();
     }
