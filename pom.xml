@@ -104,6 +104,12 @@
 			<groupId>com.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>nl.yestelecom</groupId>
+			<artifactId>phoenix-model</artifactId>
+			<type>jar</type>
+			<version>LATEST</version>
+		</dependency>
 	</dependencies>
 
 	<build>
