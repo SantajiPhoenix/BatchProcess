@@ -7,4 +7,5 @@ import nl.yestelecom.phoenix.batch.simupload.model.LoadSim;
 public interface FileCreator {
     void writeData(List<LoadSim> sims, String filename);
 
+    void writePukData(List<LoadSim> sims, String filename);
 }

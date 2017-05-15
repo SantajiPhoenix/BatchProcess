@@ -20,6 +20,10 @@ public class ZygoFtpConfiguration implements FTPConfiguration {
     private String privateKey;
     @Value("${process.zygo.remotedirectory}")
     private String remoteDirectory;
+    @Value("${pukUpload.zygo.remotedirectory}")
+    private String remotepukDirectory;
+    @Value("${simUpload.zygo.remotedirectory}")
+    private String remoteSimpUploadDirectory;
 
     @Override
     public String getSftpHost() {
@@ -49,6 +53,16 @@ public class ZygoFtpConfiguration implements FTPConfiguration {
     @Override
     public String getRemoteDirectory() {
         return remoteDirectory;
+    }
+
+    @Override
+    public String getRemotePukDirectory() {
+        return remotepukDirectory;
+    }
+
+    @Override
+    public String getremoteSimpUploadDirectory() {
+        return remoteSimpUploadDirectory;
     }
 
 }

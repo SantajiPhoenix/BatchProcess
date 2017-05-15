@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +13,14 @@ import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.simupload.io.SimCreator;
 import nl.yestelecom.phoenix.batch.simupload.model.LoadSim;
+import nl.yestelecom.phoenix.batch.simupload.service.SimLoadService;
 import nl.yestelecom.phoenix.batch.simupload.util.CSVFileReader;
 
 @Configuration
 @Service
 public class M2MSimCreator implements SimCreator {
+
+    private static Logger logger = LoggerFactory.getLogger(SimLoadService.class);
 
     @Value("${simUpload.m2m.requestfile}")
     private String requestFileName;
@@ -28,19 +33,19 @@ public class M2MSimCreator implements SimCreator {
 
     @Override
     public List<LoadSim> createSimFromFile() {
-        // TODO Auto-generated method stub
-        List<LoadSim> m2mSims = new ArrayList<LoadSim>();
+
+        List<LoadSim> m2mSims = new ArrayList<>();
         final List<String[]> fileSimData = cSVFileReader.parseFileData(requestPath + requestFileName);
-        if (null != fileSimData && fileSimData.size() > 0) {
+        if (null != fileSimData && !fileSimData.isEmpty()) {
             m2mSims = createM2MSim(fileSimData);
         }
         return m2mSims;
     }
 
     public List<LoadSim> createM2MSim(List<String[]> sims) {
-        final List<LoadSim> loadSimM2M = new ArrayList<LoadSim>();
+        final List<LoadSim> loadSimM2M = new ArrayList<>();
 
-        System.out.println("Creating Sim");
+        logger.info("Creating M2M Sim");
         for (final String[] sim : sims) {
             final LoadSim loadSim = new LoadSim();
             loadSim.setSp(Integer.parseInt(sim[0]));
@@ -60,7 +65,6 @@ public class M2MSimCreator implements SimCreator {
     }
 
     private String getGsm(String gsmNumber) {
-        // TODO Auto-generated method stub
         final String newGsmNumber = gsmNumber.substring(3, gsmNumber.length());
         return "0" + newGsmNumber;
     }

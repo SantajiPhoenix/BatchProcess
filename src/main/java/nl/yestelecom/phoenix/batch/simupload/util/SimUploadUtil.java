@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 public class SimUploadUtil {
 
     public String getFileName(String fileName) {
-        final SimpleDateFormat dt2 = new SimpleDateFormat("yyyyMMdd-HHmm");
+        final SimpleDateFormat dt2 = new SimpleDateFormat("yyyyMMddHHmm");
         final String date = dt2.format(new Date());
-        final String responseFileName = fileName + date + ".txt";
-        return responseFileName;
+        return fileName + date + ".txt";
     }
+
 }

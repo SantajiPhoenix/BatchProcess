@@ -3,6 +3,8 @@ package nl.yestelecom.phoenix.batch.simupload.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -34,11 +36,16 @@ import nl.yestelecom.phoenix.sim.repository.SimRepository;
 @Configuration
 public class SimLoadM2MService {
 
+    private static Logger logger = LoggerFactory.getLogger(SimLoadService.class);
+
     @Value("${simUpload.m2m.response.file}")
     private String responseFileName;
 
     @Value("${simupload.requestfile.path}")
     private String requestPath;
+
+    @Value("${pukUpload.response.file}")
+    private String responsePukFileName;
 
     @Autowired
     SimLoadRepository simLoadRepository;
@@ -69,31 +76,29 @@ public class SimLoadM2MService {
     @Autowired
     DealerRepository dealerRepository;
 
-    public void process(String simDetails) {
-        List<LoadSim> simList = new ArrayList<>();
-        List<Sim> simListToSave = new ArrayList<>();
-        List<GsmNumber> gsmNumberToSave = new ArrayList<>();
-        simList = m2MSimCreator.createSimFromFile();
-        System.out.println("Size is >> " + simList.size());
+    public void process() {
+
+        final List<LoadSim> simList = m2MSimCreator.createSimFromFile();
+        logger.info("Size is >> " + simList.size());
 
         simLoadRepository.deleteAll();
         simLoadRepository.save(simList);
 
-        simListToSave = getSimsToLoad(simList);
-        gsmNumberToSave = getGsmNumberToSave(simList);
+        final List<Sim> simListToSave = getSimsToLoad(simList);
+        final List<GsmNumber> gsmNumberToSave = getGsmNumberToSave(simList);
 
         simRepository.save(simListToSave);
         gsmNumberRepository.save(gsmNumberToSave);
         extractSimsForZygo(simList);
 
-        System.out.println("Process Completed");
+        logger.info("Process Completed");
 
     }
 
     private void extractSimsForZygo(List<LoadSim> simList) {
         final String filename = simUploadUtil.getFileName(responseFileName);
         m2MFileCreatorImpl.writeData(simList, filename);
-        fileSender.send(zygoFtpConfiguration, requestPath + responseFileName);
+        fileSender.send(zygoFtpConfiguration, requestPath + responseFileName, SimMessageConstants.M2MSIMLOADER);
     }
 
     private List<GsmNumber> getGsmNumberToSave(List<LoadSim> simList) {

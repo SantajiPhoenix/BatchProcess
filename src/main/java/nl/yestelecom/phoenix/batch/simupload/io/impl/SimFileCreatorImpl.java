@@ -23,17 +23,25 @@ public class SimFileCreatorImpl implements FileCreator {
     @Value("${simupload.requestfile.path}")
     private String requestPath;
 
+    public static final String YESUSIM = "YES USIM";
+    public static final String TRAILERTEXT = "__einde mcp156ai";
+
     @Autowired
     ZygoFileWriter zygoFileWriter;
 
     @Override
     public void writeData(List<LoadSim> sims, String fileName) {
-
         final String header = getHeader(sims);
-        final String trailer = getTrailer(sims);
+        final String trailer = getTrailer();
         final List<String> data = getSimData(sims);
         zygoFileWriter.generateZygoFile(header, trailer, data, requestPath + fileName);
 
+    }
+
+    @Override
+    public void writePukData(List<LoadSim> sims, String fileName) {
+        final List<String> data = getPukSimData(sims);
+        zygoFileWriter.generateZygoPukFile(data, requestPath + fileName);
     }
 
     private List<String> getSimData(List<LoadSim> loadSimsForZygo) {
@@ -54,6 +62,20 @@ public class SimFileCreatorImpl implements FileCreator {
         return simData;
     }
 
+    private List<String> getPukSimData(List<LoadSim> loadSimsForZygo) {
+        final List<String> simData = new ArrayList<>();
+        for (final LoadSim sim : loadSimsForZygo) {
+            String lineForZygo = "";
+            lineForZygo = lineForZygo + "  " + sim.getImSimNr();
+            lineForZygo = lineForZygo + "|" + sim.getPuk1();
+            lineForZygo = lineForZygo + "|" + null;
+            lineForZygo = lineForZygo + "|" + null;
+            lineForZygo = lineForZygo + "|" + null;
+            simData.add(lineForZygo);
+        }
+        return simData;
+    }
+
     private String getType2ForZygo(String fileType2) {
         String type2 = "YES USIM";
 
@@ -63,8 +85,8 @@ public class SimFileCreatorImpl implements FileCreator {
         } else if ("Y32K".equals(type2)) {
             type2 = "Y32K";
 
-        } else if ("MICRO USIM".equals(type2) || "NANO USIM".equals(type2) || "YES USIM".equals(type2)) {
-            type2 = "YES USIM";
+        } else if ("MICRO USIM".equals(type2) || "NANO USIM".equals(type2) || YESUSIM.equals(type2)) {
+            type2 = YESUSIM;
 
         } else if ("Y32KDUO".equals(type2)) {
             type2 = "Y32KDUO";
@@ -73,8 +95,8 @@ public class SimFileCreatorImpl implements FileCreator {
         return type2;
     }
 
-    private String getTrailer(List<LoadSim> sims) {
-        return "__einde mcp156ai";
+    private String getTrailer() {
+        return TRAILERTEXT;
     }
 
     private String getHeader(List<LoadSim> loadSimsForZygo) {

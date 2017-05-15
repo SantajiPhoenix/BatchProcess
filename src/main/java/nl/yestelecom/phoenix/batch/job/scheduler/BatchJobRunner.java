@@ -7,7 +7,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
@@ -20,8 +19,8 @@ import nl.yestelecom.phoenix.batch.job.preventel.PreventelProcess;
 import nl.yestelecom.phoenix.batch.job.simoverview.SimOverviewProcess;
 
 @Service
-public class JobRunner {
-    private static Logger logger = LoggerFactory.getLogger(JobRunner.class);
+public class BatchJobRunner {
+    private static Logger logger = LoggerFactory.getLogger(BatchJobRunner.class);
 
     @Autowired
     CiotProcess ciotProcess;
@@ -55,7 +54,7 @@ public class JobRunner {
         return jobs;
     }
 
-    @Scheduled(cron = "0 0 12 * * ? ")
+    // @Scheduled(cron = "0 0 12 * * ? ")
     public void runJobs() {
         addJobs();
         for (final JobProcessor job : jobs) {

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +18,6 @@ import nl.yestelecom.phoenix.batch.simupload.io.impl.SimFileCreatorImpl;
 import nl.yestelecom.phoenix.batch.simupload.model.LoadSim;
 import nl.yestelecom.phoenix.batch.simupload.repo.SimLoadRepository;
 import nl.yestelecom.phoenix.batch.simupload.util.FileSender;
-import nl.yestelecom.phoenix.batch.simupload.util.JsonToObjectConverter;
 import nl.yestelecom.phoenix.batch.simupload.util.SimUploadUtil;
 import nl.yestelecom.phoenix.connection.repo.SimStatusRepository;
 import nl.yestelecom.phoenix.sim.model.Sim;
@@ -28,14 +29,16 @@ import nl.yestelecom.phoenix.sim.repository.SimRepository;
 @Configuration
 public class SimLoadService {
 
+    private static Logger logger = LoggerFactory.getLogger(SimLoadService.class);
+
     @Value("${simUpload.response.file}")
     private String responseFileName;
 
+    @Value("${pukUpload.response.file}")
+    private String responsePukFileName;
+
     @Value("${simupload.requestfile.path}")
     private String requestPath;
-
-    @Autowired
-    private JsonToObjectConverter convertor;
 
     @Autowired
     SimLoadRepository simLoadRepository;
@@ -61,16 +64,13 @@ public class SimLoadService {
     @Autowired
     SimUploadUtil simUploadUtil;
 
-    static public final String fileName = "mcp.txt";
-
-    public void processSimDetails(String simDetails) {
+    public void processSimDetails() {
         List<LoadSim> simList = new ArrayList<>();
         final List<LoadSim> simListToSaveInLoad = new ArrayList<>();
         final List<Sim> simListToSave = new ArrayList<>();
         final SimStatus unassigned = simStatusRepository.findByCode("UNASSIGNED");
         try {
             simList = simCreatorImpl.createSimFromFile();
-            System.out.println("Data is >> " + simList.get(0).getCrDate());
             simLoadRepository.deleteAll();
 
             for (final LoadSim loadSim : simList) {
@@ -91,15 +91,32 @@ public class SimLoadService {
             extractSimsForZygo(simListToSaveInLoad);
 
         } catch (final Exception e) {
-            System.out.println("Error is >> " + e);
+            logger.error("Error is >> " + e);
+        }
+    }
+
+    public void processPukDetails() {
+        List<LoadSim> simList = new ArrayList<>();
+        try {
+            simList = simCreatorImpl.createSimFromFile();
+            logger.info("Extracting puk for zygo");
+            extractPukForZygo(simList);
+        } catch (final Exception e) {
+            logger.error("Error is >> " + e);
         }
     }
 
     private void extractSimsForZygo(List<LoadSim> simListToSaveInLoad) {
         final String filename = simUploadUtil.getFileName(responseFileName);
         simFileCreatorImpl.writeData(simListToSaveInLoad, filename);
-        fileSender.send(zygoFtpConfiguration, requestPath + responseFileName);
+        fileSender.send(zygoFtpConfiguration, requestPath + responseFileName, SimMessageConstants.SIMLOADER);
+    }
 
+    private void extractPukForZygo(List<LoadSim> simListToSaveInLoad) {
+        final String filename = simUploadUtil.getFileName(responsePukFileName);
+        simFileCreatorImpl.writePukData(simListToSaveInLoad, filename);
+        logger.info("Sending file to zygo");
+        fileSender.send(zygoFtpConfiguration, requestPath + filename, SimMessageConstants.PUKLOADER);
     }
 
     private Sim buildSim(LoadSim loadSim, SimStatus unassigned) {

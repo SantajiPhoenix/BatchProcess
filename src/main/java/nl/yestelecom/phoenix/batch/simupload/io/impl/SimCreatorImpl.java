@@ -1,9 +1,12 @@
 package nl.yestelecom.phoenix.batch.simupload.io.impl;
 
-import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +14,14 @@ import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.simupload.io.SimCreator;
 import nl.yestelecom.phoenix.batch.simupload.model.LoadSim;
+import nl.yestelecom.phoenix.batch.simupload.service.SimLoadService;
 import nl.yestelecom.phoenix.batch.simupload.util.CSVFileReader;
 
 @Service
 @Configuration
 public class SimCreatorImpl implements SimCreator {
+
+    private static Logger logger = LoggerFactory.getLogger(SimLoadService.class);
 
     @Value("${simUpload.requestfile}")
     private String requestFileName;
@@ -28,20 +34,25 @@ public class SimCreatorImpl implements SimCreator {
 
     @Override
     public List<LoadSim> createSimFromFile() {
-        List<LoadSim> sims = new ArrayList<LoadSim>();
+        List<LoadSim> sims = new ArrayList<>();
         final List<String[]> fileSimData = cSVFileReader.parseFileData(requestPath + requestFileName);
-        if (null != fileSimData && fileSimData.size() > 0) {
-            sims = createM2MSim(fileSimData);
+        if (null != fileSimData && !fileSimData.isEmpty()) {
+            sims = createSim(fileSimData);
         }
         return sims;
     }
 
-    private List<LoadSim> createM2MSim(List<String[]> fileSimData) {
-        final List<LoadSim> sims = new ArrayList<LoadSim>();
+    private List<LoadSim> createSim(List<String[]> fileSimData) {
+        final SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        final List<LoadSim> sims = new ArrayList<>();
         for (final String[] sim : fileSimData) {
             final LoadSim loadSim = new LoadSim();
             loadSim.setSp(Integer.parseInt(sim[0]));
-            loadSim.setCrDate(Date.valueOf(sim[1]));
+            try {
+                loadSim.setCrDate(formatter.parse(sim[1]));
+            } catch (final ParseException e) {
+                logger.error(e.toString());
+            }
             loadSim.setSimNr(sim[2]);
             loadSim.setLongSimNr(sim[3]);
             loadSim.setImSimNr(sim[4]);

@@ -13,14 +13,15 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
 import nl.yestelecom.phoenix.batch.simupload.configuration.impl.ZygoFtpConfiguration;
+import nl.yestelecom.phoenix.batch.simupload.service.SimMessageConstants;
 
 @Service
 public class FileSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileSender.class);
 
-    public void send(ZygoFtpConfiguration zygoFtpConfiguration, String fileName) {
-        final ChannelSftp channelSftp = getConnection(zygoFtpConfiguration);
+    public void send(ZygoFtpConfiguration zygoFtpConfiguration, String fileName, String processName) {
+        final ChannelSftp channelSftp = getConnection(zygoFtpConfiguration, processName);
         try {
             final File f = new File(fileName);
             channelSftp.put(new FileInputStream(f), f.getName());
@@ -30,8 +31,7 @@ public class FileSender {
         }
     }
 
-    private ChannelSftp getConnection(ZygoFtpConfiguration zygoFtpConfiguration) {
-        // TODO Auto-generated method stub
+    private ChannelSftp getConnection(ZygoFtpConfiguration zygoFtpConfiguration, String processName) {
         final JSch jSch = new JSch();
         Session session = null;
         Channel channel = null;
@@ -57,7 +57,7 @@ public class FileSender {
             LOG.info("Shell channel connected....");
 
             channelSftp = (ChannelSftp) channel;
-            channelSftp.cd(zygoFtpConfiguration.getRemoteDirectory());
+            channelSftp.cd(getDestinationPath(zygoFtpConfiguration, processName));
             LOG.info("Changed the directory to : " + zygoFtpConfiguration.getRemoteDirectory());
         } catch (final Exception e) {
             LOG.info("Exception is >> " + e);
@@ -66,4 +66,13 @@ public class FileSender {
 
     }
 
+    private String getDestinationPath(ZygoFtpConfiguration zygoFtpConfiguration, String processName) {
+        String path = null;
+        if (processName.equalsIgnoreCase(SimMessageConstants.PUKLOADER)) {
+            path = zygoFtpConfiguration.getRemotePukDirectory();
+        } else if (processName.equalsIgnoreCase(SimMessageConstants.SIMLOADER)) {
+            path = zygoFtpConfiguration.getremoteSimpUploadDirectory();
+        }
+        return path;
+    }
 }

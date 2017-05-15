@@ -14,4 +14,8 @@ public interface FTPConfiguration {
 
     public String getRemoteDirectory();
 
+    public String getRemotePukDirectory();
+
+    public String getremoteSimpUploadDirectory();
+
 }

@@ -15,34 +15,34 @@ import org.springframework.stereotype.Service;
 @Service
 public class ArchiveFileCreatorUtil {
 
-	private static Logger logger = LoggerFactory.getLogger(ArchiveFileCreatorUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(ArchiveFileCreatorUtil.class);
 
-	private String fileDirecotry;
+    private String fileDirecotry;
 
-	public void archiveCurrentFile() {
-		logger.info("Archiving files");
-		Date today = new Date();
-		SimpleDateFormat sds = new SimpleDateFormat("yyyyMMddHHmmSS");
-		String date = sds.format(today);
-		String archiveDir = fileDirecotry + "archive/";
-		File[] files = new File(fileDirecotry).listFiles();
+    public void archiveCurrentFile() {
+        logger.info("Archiving files");
+        final Date today = new Date();
+        final SimpleDateFormat sds = new SimpleDateFormat("yyyyMMddHHmmSS");
+        final String date = sds.format(today);
+        final String archiveDir = fileDirecotry + "archive/";
+        final File[] files = new File(fileDirecotry).listFiles();
 
-		for (File file : files) {
-			if (!file.isDirectory()) {
-				logger.info("File: " + (file.getName() + date).trim());
-				String archiveFileName = (file.getName() + "_" + date).trim();
-				Path src = Paths.get(fileDirecotry + file.getName());
-				Path dest = Paths.get(archiveDir + archiveFileName);
-				try {
-					Files.move(src, dest, StandardCopyOption.REPLACE_EXISTING);
-				} catch (Exception e) {
-					logger.error("Error while copying >> " + e);
-				}
-			}
-		}
-	}
+        for (final File file : files) {
+            if (!file.isDirectory()) {
+                logger.info("File: " + (file.getName() + date).trim());
+                final String archiveFileName = (file.getName() + "_" + date).trim();
+                final Path src = Paths.get(fileDirecotry + file.getName());
+                final Path dest = Paths.get(archiveDir + archiveFileName);
+                try {
+                    Files.move(src, dest, StandardCopyOption.REPLACE_EXISTING);
+                } catch (final Exception e) {
+                    logger.error("Error while copying >> " + e);
+                }
+            }
+        }
+    }
 
-	public void setFileDirecotry(String fileDirecotry) {
-		this.fileDirecotry = fileDirecotry;
-	}
+    public void setFileDirecotry(String fileDirecotry) {
+        this.fileDirecotry = fileDirecotry;
+    }
 }

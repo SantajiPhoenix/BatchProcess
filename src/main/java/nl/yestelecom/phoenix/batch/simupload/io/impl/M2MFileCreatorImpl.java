@@ -24,17 +24,23 @@ public class M2MFileCreatorImpl implements FileCreator {
     @Value("${simupload.requestfile.path}")
     private String requestPath;
 
+    public static final String TRAILERTEXT = "__einde mcp156ai";
+
     @Autowired
     ZygoFileWriter zygoFileWriter;
 
     @Override
     public void writeData(List<LoadSim> sims, String filename) {
-        // TODO Auto-generated method stub
         final String header = getHeader(sims);
-        final String trailer = getTrailer(sims);
+        final String trailer = getTrailer();
         final List<String> data = getSimData(sims);
         final String fileName = getFileName(responseFileName);
         zygoFileWriter.generateZygoFile(header, trailer, data, requestPath + fileName);
+
+    }
+
+    @Override
+    public void writePukData(List<LoadSim> sims, String fileName) {
 
     }
 
@@ -57,9 +63,8 @@ public class M2MFileCreatorImpl implements FileCreator {
         return simData;
     }
 
-    private String getTrailer(List<LoadSim> sims) {
-
-        return "__einde mcp156ai";
+    private String getTrailer() {
+        return TRAILERTEXT;
     }
 
     private String getHeader(List<LoadSim> sims) {
@@ -93,7 +98,6 @@ public class M2MFileCreatorImpl implements FileCreator {
     private String getFileName(String responseFileName) {
         final SimpleDateFormat dt2 = new SimpleDateFormat("yyyyMMdd-HHmm");
         final String date = dt2.format(new Date());
-        final String fileName = responseFileName + date + ".txt";
-        return fileName;
+        return responseFileName + date + ".txt";
     }
 }
