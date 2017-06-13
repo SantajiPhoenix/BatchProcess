@@ -1,6 +1,7 @@
 package nl.yestelecom.phoenix.batch.job.simoverview;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -56,6 +57,7 @@ public class SimOverviewHelper {
     List<String> simOverviewStringData(List<SimOverview> simOverviewData) {
         logger.info("Formating data");
         final List<String> simOverviewStringList = new ArrayList<>();
+        simOverviewStringList.addAll(getSecodaryHeader());
         for (final SimOverview simOver : simOverviewData) {
             String sim = "";
             sim = sim + simOver.getMainDealerName() + ";";
@@ -78,6 +80,13 @@ public class SimOverviewHelper {
         }
 
         return simOverviewStringList;
+    }
+
+    private Collection<? extends String> getSecodaryHeader() {
+        final List<String> headerList = new ArrayList<>();
+        headerList.add("Voorraad;;Soort;;;;;;;;;;;;;");
+        headerList.add(SimOverviewFileFormat.HEADERROWS);
+        return headerList;
     }
 
     Long getTypeCount(Long count) {
