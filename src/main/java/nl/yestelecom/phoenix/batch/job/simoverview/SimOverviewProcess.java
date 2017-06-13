@@ -60,7 +60,7 @@ public class SimOverviewProcess implements JobProcessor {
     private String fileDirecotry;
 
     List<DealerHeadQuarters> dealerHQ;
-    List<SimTypeCount> yestelList;
+    List<Object[]> yestelList;
     List<Object[]> busPartnerList;
     List<SimOverview> simOvewviewDataList;
     EmailDetails emailDetails;
@@ -70,7 +70,7 @@ public class SimOverviewProcess implements JobProcessor {
         logger.info("Read : " + getJobName());
 
         yestelList = simTypeCountRepository.getCountForYesTel();
-        logger.debug("size is >> " + yestelList.size());
+        logger.info("size is >> " + yestelList.size());
 
         busPartnerList = simTypeCountRepository.getBusinessPartenerCount();
 
@@ -113,7 +113,7 @@ public class SimOverviewProcess implements JobProcessor {
             final SimTypeCount simTypeCountObj = new SimTypeCount();
             simTypeCountObj.setSimType(bp[0].toString());
             simTypeCountObj.setCount(Long.valueOf(bp[1].toString()));
-            simOverview = simOverviewHelper.buildSimOverview(simTypeCountObj, simOverview);
+            simOverview = simOverviewHelper.buildSimOverview(simTypeCountObj.getSimType(), simTypeCountObj.getCount(), simOverview);
             if (SimOverviewConstants.BENODIGD.equals(simTypeCountObj.getSimType())) {
                 simOverview.setNecessary(simTypeCountObj.getCount());
             }
@@ -130,9 +130,10 @@ public class SimOverviewProcess implements JobProcessor {
         SimOverview simOverview = new SimOverview();
         simOverview.setMainDealerName("");
         simOverview.setDealerName("YES SERVICE PROVIDER");
-        for (final SimTypeCount yesTel : yestelList) {
-            simOverview = simOverviewHelper.buildSimOverview(yesTel, simOverview);
-
+        for (final Object[] yestel : yestelList) {
+            final String simType = yestel[0].toString();
+            final Long count = Long.valueOf(yestel[1].toString());
+            simOverview = simOverviewHelper.buildSimOverview(simType, count, simOverview);
         }
 
         return simOverview;
@@ -140,11 +141,10 @@ public class SimOverviewProcess implements JobProcessor {
     }
 
     private void addSimTypeCount(DealerHeadQuarters delear, SimOverview simOverview) {
-        final List<SimTypeCount> simTypeCount = simTypeCountRepository.getTypeCount(delear.getDlrId());
-        for (final SimTypeCount simType : simTypeCount) {
-            if (delear.getDlrId().equals(simType.getDlrId())) {
-                simOverview = simOverviewHelper.buildSimOverview(simType, simOverview);
-            }
+        List<Object[]> simTypeCount = new ArrayList<>();
+        simTypeCount = simTypeCountRepository.getTypeCount(delear.getDlrId());
+        for (final Object[] simType : simTypeCount) {
+            simOverview = simOverviewHelper.buildSimOverview(simType[2].toString(), Long.valueOf(simType[3].toString()), simOverview);
         }
         simOvewviewDataList.add(simOverview);
 

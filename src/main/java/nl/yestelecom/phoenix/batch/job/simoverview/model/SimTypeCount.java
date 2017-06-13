@@ -6,13 +6,14 @@ import javax.persistence.Id;
 import lombok.Data;
 
 @Entity
-//@Table(name = "SIM_CARD_STOCK_VIEW")
+// @Table(name = "SIM_CARD_STOCK_VIEW")
 @Data
 public class SimTypeCount {
 
-	String dlrId;
-	@Id
-	String simType;
-	Long count;
+    @Id
+    private Long id;
+    private String dlrId;
+    private String simType;
+    private Long count;
 
 }

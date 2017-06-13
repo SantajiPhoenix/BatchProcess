@@ -8,47 +8,46 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.simoverview.model.SimOverview;
-import nl.yestelecom.phoenix.batch.job.simoverview.model.SimTypeCount;
 
 @Service
 public class SimOverviewHelper {
     private static Logger logger = LoggerFactory.getLogger(SimOverviewHelper.class);
 
-    SimOverview buildSimOverview(SimTypeCount simTypecount, SimOverview simOverview) {
+    SimOverview buildSimOverview(String simType, Long count, SimOverview simOverview) {
         logger.info("Counting Sim Type");
 
-        if (SimOverviewConstants.Y32K.equals(simTypecount.getSimType())) {
-            simOverview.setY32KCount(simTypecount.getCount());
+        if (SimOverviewConstants.Y32K.equals(simType)) {
+            simOverview.setY32KCount(count);
         }
-        if (SimOverviewConstants.MICRO_USIM.equals(simTypecount.getSimType())) {
-            simOverview.setMICROUSIMCount(simTypecount.getCount());
+        if (SimOverviewConstants.MICRO_USIM.equals(simType)) {
+            simOverview.setMICROUSIMCount(count);
         }
-        if (SimOverviewConstants.Y32KDUO.equals(simTypecount.getSimType())) {
-            simOverview.setY32KCount(simTypecount.getCount());
+        if (SimOverviewConstants.Y32KDUO.equals(simType)) {
+            simOverview.setY32KCount(count);
         }
-        if (SimOverviewConstants.YES_USIM.equals(simTypecount.getSimType())) {
-            simOverview.setUSIMCount(simTypecount.getCount());
+        if (SimOverviewConstants.YES_USIM.equals(simType)) {
+            simOverview.setUSIMCount(count);
         }
-        if (SimOverviewConstants.YES_USIM_DUO.equals(simTypecount.getSimType())) {
-            simOverview.setUSIMDUOCount(simTypecount.getCount());
+        if (SimOverviewConstants.YES_USIM_DUO.equals(simType)) {
+            simOverview.setUSIMDUOCount(count);
         }
-        if (SimOverviewConstants.MICRO_USIM_DUO.equals(simTypecount.getSimType())) {
-            simOverview.setMICROUSIMDUOCount(simTypecount.getCount());
+        if (SimOverviewConstants.MICRO_USIM_DUO.equals(simType)) {
+            simOverview.setMICROUSIMDUOCount(count);
         }
-        if (SimOverviewConstants.YES_NANO_MICRO_COMBI_DUO_USIM.equals(simTypecount.getSimType())) {
-            simOverview.setYESNANOMICROCOMBIDUOCount(simTypecount.getCount());
+        if (SimOverviewConstants.YES_NANO_MICRO_COMBI_DUO_USIM.equals(simType)) {
+            simOverview.setYESNANOMICROCOMBIDUOCount(count);
         }
-        if (SimOverviewConstants.NANO_USIM.equals(simTypecount.getSimType())) {
-            simOverview.setNANOUSIMCount(simTypecount.getCount());
+        if (SimOverviewConstants.NANO_USIM.equals(simType)) {
+            simOverview.setNANOUSIMCount(count);
         }
-        if (SimOverviewConstants.YES_NANO_NANO_DUO.equals(simTypecount.getSimType())) {
-            simOverview.setYESNANONANODUOCount(simTypecount.getCount());
+        if (SimOverviewConstants.YES_NANO_NANO_DUO.equals(simType)) {
+            simOverview.setYESNANONANODUOCount(count);
         }
-        if (SimOverviewConstants.NANO_USIM_DUO.equals(simTypecount.getSimType())) {
-            simOverview.setNANOUSIMDUOCount(simTypecount.getCount());
+        if (SimOverviewConstants.NANO_USIM_DUO.equals(simType)) {
+            simOverview.setNANOUSIMDUOCount(count);
         }
-        if (SimOverviewConstants.NFCV1_USIM.equals(simTypecount.getSimType())) {
-            simOverview.setNFCV1USIMCount(simTypecount.getCount());
+        if (SimOverviewConstants.NFCV1_USIM.equals(simType)) {
+            simOverview.setNFCV1USIMCount(count);
         }
 
         return simOverview;

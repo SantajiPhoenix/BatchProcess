@@ -8,9 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 import nl.yestelecom.phoenix.batch.job.simoverview.model.SimTypeCount;
 
-public interface SimTypeCountRepository extends JpaRepository<SimTypeCount, Long>{
-	
-	@Query(value="select * from ( select dlr1.id as dlr_id, "
+public interface SimTypeCountRepository extends JpaRepository<SimTypeCount, Long> {
+
+    @Query(value="select  rownum As id, dlr_id, sim_type, count from ( select dlr1.id as dlr_id, "
 			+ "s1.type2 as sim_type, "
 			+ "count(*) as count  "
 			+ "from sims s1 "
@@ -22,12 +22,13 @@ public interface SimTypeCountRepository extends JpaRepository<SimTypeCount, Long
 			+ "( "
 			+ "gs1.activation_date is null or "
 			+ "gs1.activation_date >= sysdate ) "
+			+ "and dlr1.id is not null "
 			+ "group by "
 			+ "dlr1.id, "
-			+ "s1.type2) where dlr_id =:dlrId",nativeQuery=true)
-	List<SimTypeCount> getTypeCount(@Param("dlrId")String dlrId);
+			+ "s1.type2)  where dlr_id =:dlrId",nativeQuery=true)
+	List<Object[]> getTypeCount(@Param("dlrId")String dlrId);
 
-	@Query(value= "select * from( "
+    @Query(value= "select sim_type, count from( "
 			+ "select dlr1.id as dlr_id, "
 					+ "s1.type2 as sim_type, "
 					+ "count(*) as count  "
@@ -44,9 +45,9 @@ public interface SimTypeCountRepository extends JpaRepository<SimTypeCount, Long
 					+ "dlr1.id, "
 					+ "s1.type2) "
 					+ "where dlr_id is null  and sim_type is not null", nativeQuery=true)
-	List<SimTypeCount> getCountForYesTel();
-	
-	@Query(value="select sum(count) from (select dlr1.id as dlr_id, "
+	List<Object[]> getCountForYesTel();
+
+    @Query(value="select sum(count) from (select dlr1.id as dlr_id, "
 			+ "s1.type2 as sim_type, "
 			+ "count(*) as count  "
 			+ "from sims s1 "
@@ -63,8 +64,8 @@ public interface SimTypeCountRepository extends JpaRepository<SimTypeCount, Long
 			+ "s1.type2) "
 			+ "where dlr_id =:dlrId", nativeQuery=true)
 	Long getTotalSimxCountForDelaer(@Param("dlrId")String dlrId);
-	
-	@Query(value="select sim_type, sum(count) as count "
+
+    @Query(value="select sim_type, sum(count) as count "
 			+ "from (select dlr1.id as dlr_id, s1.type2 as sim_type, count(*) as count  "
 			+ "from sims s1 "
 			+ "left join sim_status ss1 on ss1.id = s1.sst_id "
