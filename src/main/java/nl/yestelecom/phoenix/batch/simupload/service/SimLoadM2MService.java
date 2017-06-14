@@ -98,7 +98,7 @@ public class SimLoadM2MService {
     private void extractSimsForZygo(List<LoadSim> simList) {
         final String filename = simUploadUtil.getFileName(responseFileName);
         m2MFileCreatorImpl.writeData(simList, filename);
-        fileSender.send(zygoFtpConfiguration, requestPath + filename, SimMessageConstants.M2MSIMLOADER);
+        fileSender.send(zygoFtpConfiguration, requestPath + responseFileName, SimMessageConstants.M2MSIMLOADER);
     }
 
     private List<GsmNumber> getGsmNumberToSave(List<LoadSim> simList) {

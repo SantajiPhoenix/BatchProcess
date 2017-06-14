@@ -16,14 +16,7 @@ public class ZygoFileWriter {
 
     public void generateZygoFile(String header, String trailer, List<String> data, String fileName) {
 
-        try {
-            final File file = new File(fileName);
-
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            final FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            final BufferedWriter bw = new BufferedWriter(fw);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
             bw.write(header);
             bw.write("\n\n");
             for (final String str : data) {
@@ -32,8 +25,6 @@ public class ZygoFileWriter {
             }
             bw.write("\n");
             bw.write(trailer);
-            fw.close();
-            bw.close();
         } catch (final Exception e) {
             LOG.error("Exceptin is >> " + e);
         }
