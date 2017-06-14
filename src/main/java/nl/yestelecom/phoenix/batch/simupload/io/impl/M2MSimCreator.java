@@ -1,7 +1,8 @@
 package nl.yestelecom.phoenix.batch.simupload.io.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -44,12 +45,16 @@ public class M2MSimCreator implements SimCreator {
 
     public List<LoadSim> createM2MSim(List<String[]> sims) {
         final List<LoadSim> loadSimM2M = new ArrayList<>();
-
+        final SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
         logger.info("Creating M2M Sim");
         for (final String[] sim : sims) {
             final LoadSim loadSim = new LoadSim();
             loadSim.setSp(Integer.parseInt(sim[0]));
-            loadSim.setCrDate(new java.sql.Date(Calendar.getInstance().getTime().getTime()));
+            try {
+                loadSim.setCrDate(formatter.parse(sim[1]));
+            } catch (final ParseException e) {
+                logger.error(e.toString());
+            }
             loadSim.setSimNr(sim[2]);
             loadSim.setLongSimNr(sim[3]);
             loadSim.setImSimNr(sim[4]);

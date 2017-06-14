@@ -43,7 +43,7 @@ public class SimCreatorImpl implements SimCreator {
     }
 
     private List<LoadSim> createSim(List<String[]> fileSimData) {
-        final SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+        final SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
         final List<LoadSim> sims = new ArrayList<>();
         for (final String[] sim : fileSimData) {
             final LoadSim loadSim = new LoadSim();
