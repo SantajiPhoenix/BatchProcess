@@ -60,8 +60,7 @@ public class CiotFTPSender implements FTPSender {
 
 	@Override
 	public String getFileName() {
-		fileName = fileName + sequence + ".xml";
-		return fileName;
+		return fileName + sequence + ".xml";
 	}
 
 	@Override

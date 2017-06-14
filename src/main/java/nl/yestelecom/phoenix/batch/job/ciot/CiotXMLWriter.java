@@ -28,8 +28,7 @@ public class CiotXMLWriter implements XmlWriter {
 
 	@Override
 	public String getFileName() {
-		fileName = fileName + sequence + ".xml";
-		return fileName;
+		return fileName + sequence + ".xml";
 	}
 
 	@Override
