@@ -98,7 +98,7 @@ public class SimLoadM2MService {
     private void extractSimsForZygo(List<LoadSim> simList) {
         final String filename = simUploadUtil.getFileName(responseFileName);
         m2MFileCreatorImpl.writeData(simList, filename);
-        fileSender.send(zygoFtpConfiguration, requestPath + responseFileName, SimMessageConstants.M2MSIMLOADER);
+        fileSender.send(zygoFtpConfiguration, requestPath + filename, SimMessageConstants.M2MSIMLOADER);
     }
 
     private List<GsmNumber> getGsmNumberToSave(List<LoadSim> simList) {
@@ -120,8 +120,19 @@ public class SimLoadM2MService {
         final SimStatus unassigned = simStatusRepository.findByCode("UNASSIGNED");
         final List<Sim> simListToSave = new ArrayList<>();
         for (final LoadSim loadSim : simList) {
-            final Sim sim = Sim.builder().imsinr(loadSim.getImSimNr()).simNo(loadSim.getSimNr().toString()).longSimNr(loadSim.getLongSimNr().trim()).dealer(dealer).customer(null)
-                    .puk1(loadSim.getPuk1()).type2("M2M").type1(loadSim.getType1().trim()).simStatus(unassigned).sp(new Integer(14)).createdDate(loadSim.getCrDate()).build();
+            //// @formatter:off
+
+            final Sim sim = Sim.builder().imsinr(loadSim.getImSimNr())
+                    .simNo(loadSim.getSimNr().toString())
+                    .longSimNr(loadSim.getLongSimNr().trim())
+                    .dealer(dealer).customer(null)
+                    .puk1(loadSim.getPuk1())
+                    .type2("M2M")
+                    .type1(loadSim.getType1().trim())
+                    .simStatus(unassigned)
+                    .sp(new Integer(14))
+                    .createdDate(loadSim.getCrDate()).build();
+         // @formatter:on
             simListToSave.add(sim);
 
         }

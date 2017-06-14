@@ -109,7 +109,7 @@ public class SimLoadService {
     private void extractSimsForZygo(List<LoadSim> simListToSaveInLoad) {
         final String filename = simUploadUtil.getFileName(responseFileName);
         simFileCreatorImpl.writeData(simListToSaveInLoad, filename);
-        fileSender.send(zygoFtpConfiguration, requestPath + responseFileName, SimMessageConstants.SIMLOADER);
+        fileSender.send(zygoFtpConfiguration, requestPath + filename, SimMessageConstants.SIMLOADER);
     }
 
     private void extractPukForZygo(List<LoadSim> simListToSaveInLoad) {
