@@ -36,7 +36,11 @@ public class VasReconProcess implements JobProcessor {
     @Override
     public void read() {
         logger.info("Read : " + getJobName());
+
+        // List<Long> l = Arrays.asList(235669L, 235671L, 235672L, 235674L, 235675L, 235675L);
         vasReconProductsView = vasReconRepository.findAll();
+        // vasReconProductsView
+        // vasReconProductsView.addAll(vasReconRepository.findByGssIdIn(l));
         vasPriceReconView = vasReconPriceViewRepo.findAll();
     }
 
@@ -47,13 +51,19 @@ public class VasReconProcess implements JobProcessor {
         zygoList = new ArrayList<>();
         for (VasReconProductsView reconProductView : vasReconProductsView) {
             logger.info("reconProductView record" + reconProductView.getGssId());
+            logger.info("Befoure if");
             if ("C2Y".equals(reconProductView.getSource())) {
+                logger.info("In if");
                 final VasReconData vasReconData = processSkelRecord(reconProductView);
+
                 if (vasReconData.getGssId() != null) {
+                    logger.info("In add");
                     c2yList.add(vasReconData);
                 }
             } else if ("ZYGO".equals(reconProductView.getSource())) {
+                logger.info("In else");
                 final VasReconData vasReconData = processZygoRecord(reconProductView);
+                logger.info("In else add");
                 zygoList.add(vasReconData);
             }
         }
@@ -83,6 +93,7 @@ public class VasReconProcess implements JobProcessor {
     }
 
     private VasReconData processSkelRecord(VasReconProductsView vasReconDataView) {
+        logger.info("In processSkelRecord");
         logger.info("Process Skeleton differences" + vasReconDataView.getGssId());
         final VasReconData vasReconData = new VasReconData();
         vasReconData.setAction("TOEV");
@@ -103,6 +114,7 @@ public class VasReconProcess implements JobProcessor {
     }
 
     private VasReconData processZygoRecord(VasReconProductsView vasReconDataView) {
+        logger.info("In processZygoRecord");
         logger.info("Process Zygo differences " + vasReconDataView.getGssId());
         final VasReconData vasReconData = new VasReconData();
         vasReconData.setAction("BEIN");
