@@ -46,6 +46,7 @@ public class VasReconProcess implements JobProcessor {
         c2yList = new ArrayList<>();
         zygoList = new ArrayList<>();
         for (VasReconProductsView reconProductView : vasReconProductsView) {
+            logger.info("reconProductView record" + reconProductView.getGssId());
             if ("C2Y".equals(reconProductView.getSource())) {
                 final VasReconData vasReconData = processSkelRecord(reconProductView);
                 if (vasReconData.getGssId() != null) {

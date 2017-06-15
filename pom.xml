@@ -5,7 +5,7 @@
 
 	<groupId>nl.yestelecom.phoenix.batch</groupId>
 	<artifactId>batchprocess</artifactId>
-	<version>01.39.21</version>
+	<version>01.39.22</version>
 	<packaging>jar</packaging>
 
 	<name>batchprocess</name>
