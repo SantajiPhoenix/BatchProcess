@@ -59,7 +59,8 @@ public class CreditControlProcess implements JobProcessor {
     @Override
     public void read() {
         logger.info("Read : " + getJobName());
-        creditControl = creditControlRepository.findAll();
+        creditControl = creditControlRepository.fetchAllData();
+
         emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
     }
 
