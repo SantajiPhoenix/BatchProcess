@@ -77,7 +77,7 @@ public class VasReconProcess implements JobProcessor {
             priceChangeToSave.setRetry(null);
             priceChangeToSave.setAmountBilled(priceChange.getAmountBilled());
             priceChangeToSave.setPlannedAMount(priceChange.getPlannedAMount());
-            priceChangeToSave.setC2yPrice(priceChange.getSktPrice());
+            priceChangeToSave.setC2yPrice(priceChange.getC2yPrice());
             priceChangeToSave.setConfigAmount(priceChange.getConfigAmount());
             priceList.add(priceChangeToSave);
         }

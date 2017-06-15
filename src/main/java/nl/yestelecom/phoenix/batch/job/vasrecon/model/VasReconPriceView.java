@@ -42,8 +42,8 @@ public class VasReconPriceView {
     @Column(name = "AMOUNT_BILLED")
     Long amountBilled;
 
-    @Column(name = "SKT_PRICE")
-    Long sktPrice;
+    @Column(name = "C2Y_PRICE")
+    Long c2yPrice;
 
     @Column(name = "PLANNED_AMOUNT")
     Long plannedAMount;
