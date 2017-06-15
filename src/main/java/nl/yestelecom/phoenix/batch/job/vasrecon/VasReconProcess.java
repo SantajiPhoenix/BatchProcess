@@ -82,7 +82,7 @@ public class VasReconProcess implements JobProcessor {
     }
 
     private VasReconData processSkelRecord(VasReconProductsView vasReconDataView) {
-        logger.info("Process Skeleton differences");
+        logger.info("Process Skeleton differences" + vasReconDataView.getGssId());
         final VasReconData vasReconData = new VasReconData();
         vasReconData.setAction("TOEV");
         vasReconData.setGssId(vasReconDataView.getGssId());
@@ -102,7 +102,7 @@ public class VasReconProcess implements JobProcessor {
     }
 
     private VasReconData processZygoRecord(VasReconProductsView vasReconDataView) {
-        logger.info("Process Zygo differences");
+        logger.info("Process Zygo differences " + vasReconDataView.getGssId());
         final VasReconData vasReconData = new VasReconData();
         vasReconData.setAction("BEIN");
         vasReconData.setGssId(vasReconDataView.getGssId());
