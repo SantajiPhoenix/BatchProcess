@@ -51,7 +51,7 @@ public class PreventelEncodedFileSender {
             //Process p1 = pb.start();
             if (env.equalsIgnoreCase(currentEnv)) {
                // p = Runtime.getRuntime().exec(commandsTest);
-            	ProcessBuilder pb = new ProcessBuilder("bash", "-c", "/bin/scp", filePath + getFileName(), remoteFilePath );
+            	ProcessBuilder pb = new ProcessBuilder("bash", "-c", "scp", filePath + getFileName(), remoteFilePath );
                 p = pb.start();
             } else {
                 p = Runtime.getRuntime().exec(commandsProd, shell);
