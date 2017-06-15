@@ -39,7 +39,7 @@ public class PreventelEncodedFileSender {
 
         try {
             final String[] shell = { "/bin/bash" };
-            final String commandTest1 = "rsync -avz " + filePath + getFileName() + " " + userName + "@" + host + ":" + remoteFilePath + getFileName();
+            final String commandTest1 = "copy " + filePath + getFileName() + " " + remoteFilePath;
             final String[] commandsTest = { commandTest1 };
             Process p;
 
@@ -47,8 +47,12 @@ public class PreventelEncodedFileSender {
             final String command2 = "scp " + filePath + getFileName() + " " + userName + "@" + host + ":" + remoteFilePath + getRemoteFileName();
             final String[] commandsProd = { command1, command2 };
 
+            //ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "copy", "C:\\opt\\phoenix\\batch\\preventel\\YES_17615V1", "C:\\opt\\preventel\\" );
+            //Process p1 = pb.start();
             if (env.equalsIgnoreCase(currentEnv)) {
-                p = Runtime.getRuntime().exec(commandsTest, shell);
+               // p = Runtime.getRuntime().exec(commandsTest);
+            	ProcessBuilder pb = new ProcessBuilder("bash", "-c", "/bin/scp", filePath + getFileName(), remoteFilePath );
+                p = pb.start();
             } else {
                 p = Runtime.getRuntime().exec(commandsProd, shell);
             }
