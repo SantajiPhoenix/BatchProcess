@@ -45,7 +45,7 @@ public class M2MSimCreator implements SimCreator {
 
     public List<LoadSim> createM2MSim(List<String[]> sims) {
         final List<LoadSim> loadSimM2M = new ArrayList<>();
-        final SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+        final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         logger.info("Creating M2M Sim");
         for (final String[] sim : sims) {
             final LoadSim loadSim = new LoadSim();
