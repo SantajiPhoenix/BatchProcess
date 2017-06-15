@@ -39,7 +39,7 @@ public class PreventelEncodedFileSender {
 
         try {
             final String[] shell = { "/bin/bash" };
-            final String commandTest1 = "scp " + filePath + getFileName() + " " + remoteFilePath;
+            final String commandTest1 = "scp " + filePath + getFileName() + " " + userName + "@" + host + ":" + remoteFilePath;
             final String[] commandsTest = { commandTest1 };
             Process p;
 
