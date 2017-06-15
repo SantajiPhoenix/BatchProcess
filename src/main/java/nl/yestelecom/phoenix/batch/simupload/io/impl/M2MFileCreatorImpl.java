@@ -34,8 +34,7 @@ public class M2MFileCreatorImpl implements FileCreator {
         final String header = getHeader(sims);
         final String trailer = getTrailer();
         final List<String> data = getSimData(sims);
-        final String fileName = getFileName(responseFileName);
-        zygoFileWriter.generateZygoFile(header, trailer, data, requestPath + fileName);
+        zygoFileWriter.generateZygoFile(header, trailer, data, requestPath + filename);
 
     }
 
@@ -95,9 +94,4 @@ public class M2MFileCreatorImpl implements FileCreator {
         return type2;
     }
 
-    private String getFileName(String responseFileName) {
-        final SimpleDateFormat dt2 = new SimpleDateFormat("yyyyMMdd-HHmm");
-        final String date = dt2.format(new Date());
-        return responseFileName + date + ".txt";
-    }
 }
