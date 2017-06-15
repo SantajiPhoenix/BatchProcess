@@ -38,7 +38,6 @@ public class VasReconProcess implements JobProcessor {
         logger.info("Read : " + getJobName());
         vasReconProductsView = vasReconRepository.findAll();
         vasPriceReconView = vasReconPriceViewRepo.findAll();
-
     }
 
     @Override
@@ -46,18 +45,16 @@ public class VasReconProcess implements JobProcessor {
         logger.info("Process : " + getJobName());
         c2yList = new ArrayList<>();
         zygoList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            final VasReconProductsView vasReconDataView = vasReconProductsView.get(i);
-            if ("C2Y".equals(vasReconDataView.getSource())) {
-                final VasReconData vasReconData = processSkelRecord(vasReconDataView);
+        for (VasReconProductsView reconProductView : vasReconProductsView) {
+            if ("C2Y".equals(reconProductView.getSource())) {
+                final VasReconData vasReconData = processSkelRecord(reconProductView);
                 if (vasReconData.getGssId() != null) {
                     c2yList.add(vasReconData);
                 }
-            } else if ("ZYGO".equals(vasReconDataView.getSource())) {
-                final VasReconData vasReconData = processZygoRecord(vasReconDataView);
+            } else if ("ZYGO".equals(reconProductView.getSource())) {
+                final VasReconData vasReconData = processZygoRecord(reconProductView);
                 zygoList.add(vasReconData);
             }
-
         }
         processPriceChanges();
 
@@ -121,7 +118,7 @@ public class VasReconProcess implements JobProcessor {
     public void write() {
 
         if (null != zygoList || null != c2yList || null != priceList) {
-            vasReconDataRepository.deleteAll();
+            vasReconDataRepository.deleteAllInBatch();
         }
         logger.info("Write : " + getJobName());
         vasReconDataRepository.save(zygoList);
