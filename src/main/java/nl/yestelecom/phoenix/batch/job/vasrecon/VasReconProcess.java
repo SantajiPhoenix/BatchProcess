@@ -65,6 +65,7 @@ public class VasReconProcess implements JobProcessor {
                 final VasReconData vasReconData = processZygoRecord(reconProductView);
                 logger.info("In else add");
                 zygoList.add(vasReconData);
+                logger.info("In else add after");
             }
         }
         processPriceChanges();
