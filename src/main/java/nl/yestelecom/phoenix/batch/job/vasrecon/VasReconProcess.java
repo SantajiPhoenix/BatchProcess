@@ -89,7 +89,7 @@ public class VasReconProcess implements JobProcessor {
         final VasReconData vasReconData = new VasReconData();
         vasReconData.setAction("TOEV");
         vasReconData.setGssId(vasReconDataView.getGssId());
-        vasReconData.setGssProdId(vasReconDataView.getGssId());
+        vasReconData.setGssProdId(vasReconDataView.getGssProdId());
         vasReconData.setC2yCode(vasReconDataView.getCode());
         vasReconData.setStatus(null);
         vasReconData.setSource("SKEL");
@@ -119,6 +119,10 @@ public class VasReconProcess implements JobProcessor {
 
     @Override
     public void write() {
+
+        if (null != zygoList || null != c2yList || null != priceList) {
+            vasReconDataRepository.deleteAll();
+        }
         logger.info("Write : " + getJobName());
         vasReconDataRepository.save(zygoList);
         vasReconDataRepository.save(c2yList);
