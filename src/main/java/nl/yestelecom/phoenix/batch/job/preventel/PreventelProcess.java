@@ -100,8 +100,8 @@ public class PreventelProcess implements JobProcessor {
     @Override
     public void postProcess() {
         logger.info("Post Process : " + getJobName());
-        archiveFileCreator.setFileDirecotry(fileDirecotry);
-        archiveFileCreator.archiveCurrentFile();
+        //archiveFileCreator.setFileDirecotry(fileDirecotry);
+        //archiveFileCreator.archiveCurrentFile();
     }
 
     @Override
