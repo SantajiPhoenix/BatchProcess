@@ -26,8 +26,7 @@ public class PreventelTxtWriter implements TxtWriter {
 
 	@Override
 	public String getFileName() {
-		fileName = fileName + sequence;
-		return fileName;
+		return fileName + sequence;
 	}
 
 	@Override
