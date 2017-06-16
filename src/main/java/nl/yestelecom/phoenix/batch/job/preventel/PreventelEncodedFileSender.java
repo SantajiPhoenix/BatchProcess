@@ -54,8 +54,6 @@ public class PreventelEncodedFileSender {
                // p = Runtime.getRuntime().exec(commandsTest);
             	ProcessBuilder pb = new ProcessBuilder("bash", "-c", "/bin/sh", "/../.."+filePath + getFileName(),   "/../.."+remoteFilePath );
             	logger.info(pb.command().toString());
-            	
-            	logger.info(""+pb.command().toArray());
                 p = pb.start();
             } else {
                 p = Runtime.getRuntime().exec(commandsProd, shell);
