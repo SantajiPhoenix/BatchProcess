@@ -52,7 +52,7 @@ public class PreventelEncodedFileSender {
             //Process p1 = pb.start();
             if (env.equalsIgnoreCase(currentEnv)) {
                // p = Runtime.getRuntime().exec(commandsTest);
-            	ProcessBuilder pb = new ProcessBuilder("bash", "-c", "/bin/sh", "preventel.sh");
+            	ProcessBuilder pb = new ProcessBuilder("bash", "-c", "/bin/sh", "/../.."+filePath + getFileName(),   "/../.."+remoteFilePath );
             	logger.info(pb.command().toString());
             	
             	logger.info(""+pb.command().toArray());
@@ -65,13 +65,14 @@ public class PreventelEncodedFileSender {
             stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
             // read the output from the command
-            logger.info("Here is the standard output of the command:\n");
             while ((data = stdInput.readLine()) != null) {
+                logger.info("Here is the standard output of the command:\n");
                 logger.info(data);
             }
+
             // read any errors from the attempted command
-            logger.error("Here is the standard error of the command (if any):\n");
             while ((data = stdError.readLine()) != null) {
+                logger.error("Here is the standard error of the command (if any):\n");
                 logger.error(data);
             }
         } catch (final IOException e) {
