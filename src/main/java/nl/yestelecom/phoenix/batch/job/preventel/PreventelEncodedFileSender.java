@@ -52,7 +52,7 @@ public class PreventelEncodedFileSender {
             //Process p1 = pb.start();
             if (env.equalsIgnoreCase(currentEnv)) {
                // p = Runtime.getRuntime().exec(commandsTest);
-            	ProcessBuilder pb = new ProcessBuilder("bash", "-c", "scp", "/../.."+filePath + getFileName(),   "/../.."+remoteFilePath );
+            	ProcessBuilder pb = new ProcessBuilder("bash", "-c", "sh", "preventel.sh" );
             	logger.info(pb.command().toString());
                 p = pb.start();
             } else {
