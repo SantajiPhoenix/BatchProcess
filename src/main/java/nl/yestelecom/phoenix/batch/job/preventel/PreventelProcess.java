@@ -30,10 +30,6 @@ public class PreventelProcess implements JobProcessor {
     @Autowired
     private WriteVisitor writerVisitorImpl;
     @Autowired
-    private PreventelEncodedFileSender preventelEncodedFileSender;
-    @Autowired
-    private ArchiveFileCreatorUtil archiveFileCreator;
-    @Autowired
     private PreventelEmailSender preventelEmailSender;
     @Autowired
     private EmailDetailsRepo emailDetailsRepo;
@@ -93,15 +89,13 @@ public class PreventelProcess implements JobProcessor {
         preventelEmailSender.setEmailDetails(emailDetails);
         preventelEmailSender.accept(senderVisitor);
 
-        preventelEncodedFileSender.setSequence(sequence);
-        preventelEncodedFileSender.fileEncoderAndSender();
     }
 
     @Override
     public void postProcess() {
-        logger.info("Post Process : " + getJobName());
-        archiveFileCreator.setFileDirecotry(fileDirecotry);
-        archiveFileCreator.archiveCurrentFile();
+        //logger.info("Post Process : " + getJobName());
+        //archiveFileCreator.setFileDirecotry(fileDirecotry);
+        //archiveFileCreator.archiveCurrentFile();
     }
 
     @Override

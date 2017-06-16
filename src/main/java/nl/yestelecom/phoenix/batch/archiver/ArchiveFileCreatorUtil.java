@@ -29,7 +29,7 @@ public class ArchiveFileCreatorUtil {
 
         for (final File file : files) {
             if (!file.isDirectory()) {
-                logger.info("File: " + (file.getName() + date).trim());
+                logger.info("File: " + (file.getName()+ "_" + date).trim());
                 final String archiveFileName = (file.getName() + "_" + date).trim();
                 final Path src = Paths.get(fileDirecotry + file.getName());
                 final Path dest = Paths.get(archiveDir + archiveFileName);

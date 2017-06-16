@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class PreventelUtil {
 
 	public String getDate() {
-		DateFormat dateFormat = new SimpleDateFormat("yyMdd");
+		DateFormat dateFormat = new SimpleDateFormat("yyMMdd");
 		Date date = new Date();
 		return dateFormat.format(date);
 	}
