@@ -22,16 +22,16 @@ public class LoginUtil {
 
     @Autowired
     private UserRepository userRepo;
-    
+
     public static Authentication authentication;
-    
+
     @PostConstruct
     private void login() {
         // @formatter:off
         final String USER_NAME = "mccs";
-        final String PASS_WD = "Phoenix"; 
-        final User user = userRepo.findByUsernameIgnoreCase(USER_NAME);
-        
+        final String PASS_WD = "Phoenix";
+        final User user = userRepo.findByUsername(USER_NAME);
+
         if(user == null) {
             LOG.error("Could not find user with username {}. Please make sure this user exists in the database.", new Object []{USER_NAME});
             System.exit(1);
@@ -44,7 +44,7 @@ public class LoginUtil {
                .setAuthentication(
                        new TestingAuthenticationToken(
                        new UserAwareUserDetails(user, AuthorityUtils.commaSeparatedStringToAuthorityList("a,b")), PASS_WD));
-        
+
         authentication = SecurityContextHolder.getContext().getAuthentication();
         // @formatter:on
     }
