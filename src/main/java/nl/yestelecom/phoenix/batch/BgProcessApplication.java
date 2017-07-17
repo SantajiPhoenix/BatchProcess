@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = { "nl.yestelecom.phoenix", "nl.yestelecom.phoenix.batch" }, considerNestedRepositories = true)
 @ComponentScan(basePackages = { "nl.yestelecom.phoenix", "nl.yestelecom.phoenix.batch" })
+@PropertySource("file:/opt/phoenix/configuration/database.properties")
 @PropertySource("file:/opt/phoenix/configuration/backgroudjobs.properties")
 public class BgProcessApplication {
 
