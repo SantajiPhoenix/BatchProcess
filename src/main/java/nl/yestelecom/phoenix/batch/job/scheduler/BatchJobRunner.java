@@ -55,7 +55,7 @@ public class BatchJobRunner {
         return jobs;
     }
 
-    @Scheduled(cron = "0 0 12 * * ? ")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void runJobs() {
         addJobs();
         for (final JobProcessor job : jobs) {
