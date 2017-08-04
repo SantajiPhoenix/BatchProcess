@@ -11,6 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication(scanBasePackages = { "nl.yestelecom.phoenix", "nl.yestelecom.phoenix.batch" }, exclude = { SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class })
@@ -22,7 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(basePackages = { "nl.yestelecom.phoenix", "nl.yestelecom.phoenix.batch" }, considerNestedRepositories = true)
 @ComponentScan(basePackages = { "nl.yestelecom.phoenix", "nl.yestelecom.phoenix.batch" })
 @PropertySource(value = { "file:/opt/phoenix/configuration/database.properties", "file:/opt/phoenix/configuration/backgroudjobs.properties", "file:/opt/phoenix/configuration/ciot-rsa-key.properties"})
-
+@EnableScheduling
 public class BgProcessApplication {
 
     public static void main(String[] args) {
