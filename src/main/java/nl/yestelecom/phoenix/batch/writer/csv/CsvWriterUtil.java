@@ -37,8 +37,8 @@ public class CsvWriterUtil {
                 writer.writeNext(entries);
             }
             logger.info("Finished Write");
+            writer.flush();
             fileWriter.close();
-            writer.close();
         } catch (final IOException e) {
             logger.error(e.getMessage(), e);
         }
