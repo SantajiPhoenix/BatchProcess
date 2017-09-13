@@ -36,38 +36,36 @@ public interface MarketPointsRepository extends JpaRepository<MarketPoints, Long
     @Query(value="select rownum As ID, VOICE_POINTS, DATA_POINTS, PRODUCT_POINTS, CODE, DEALER_NAME, ACCOUNT_MANAGER, ACCEPTED_DATE, CONTRACT_NR  from V_POINTS_PER_CONTRACT_INC2" , nativeQuery=true)
 	List<MarketPoints> getViewPointsPerContractInc2();
 
-    @Query(value=" SELECT   SUM (VOICE_POINTS) AS VOICEPOINTS, "
-			+ "SUM (DATA_POINTS) AS DATAPOINTS, "
-			+ "SUM (PRODUCT_POINTS) AS PRODUCTPOINTS, "
-			+ "CODE, "
-			+ "DEALER_NAME, "
-			+ "ACCOUNT_MANAGER, "
-			+ "ACCEPTED_DATE, "
-			+ "CONTRACT_NR "
-			+ "FROM   V_POINTS_PER_CONTRACT "
-			+ "GROUP BY   "
-			+ "CODE, "
-			+ "DEALER_NAME, "
-			+ "ACCOUNT_MANAGER, "
-			+ "ACCEPTED_DATE, "
-			+ "CONTRACT_NR", nativeQuery=true)
-	List<Object []> getViewPointsPerContractMergedInc1();
+    @Query(value = "SELECT   SUM (VOICE_POINTS) AS VOICEPOINTS,  "
+            + "SUM (DATA_POINTS) AS DATAPOINTS,  "
+            + "SUM (PRODUCT_POINTS) AS PRODUCTPOINTS,  "
+            + "SUM (USED_POINTS) AS USEDPOINTS, "
+            + "SUM (TOTAL) AS TOTAL, "
+            + "SUM (GRAND_TOTAL) AS GRANDTOTAL, "
+            + "CODE,  "
+            + "DEALER_NAME,  "
+            + "ACCOUNT_MANAGER "
+            + "FROM   VIEW_POINTS_TOTAL  "
+            + "GROUP BY    "
+            + "CODE,  "
+            + "DEALER_NAME, "
+            + "ACCOUNT_MANAGER", nativeQuery = true)
+    List<Object []> getViewPointsPerContractMergedInc1();
 
-    @Query(value=" SELECT   SUM (VOICE_POINTS) AS VOICEPOINTS, "
-			+ "SUM (DATA_POINTS) AS DATAPOINTS, "
-			+ "SUM (PRODUCT_POINTS) AS PRODUCTPOINTS, "
-			+ "CODE, "
-			+ "DEALER_NAME, "
-			+ "ACCOUNT_MANAGER, "
-			+ "ACCEPTED_DATE, "
-			+ "CONTRACT_NR "
-			+ "FROM   V_POINTS_PER_CONTRACT_INC2 "
-			+ "GROUP BY   "
-			+ "CODE, "
-			+ "DEALER_NAME, "
-			+ "ACCOUNT_MANAGER, "
-			+ "ACCEPTED_DATE, "
-			+ "CONTRACT_NR", nativeQuery=true)
-	List<Object []> getViewPointsPerContractMergedInc2();
+    @Query(value = "SELECT   SUM (VOICE_POINTS) AS VOICEPOINTS,  "
+            + "SUM (DATA_POINTS) AS DATAPOINTS,  "
+            + "SUM (PRODUCT_POINTS) AS PRODUCTPOINTS,  "
+            + "SUM (USED_POINTS) AS USEDPOINTS, "
+            + "SUM (TOTAL) AS TOTAL, "
+            + "SUM (GRAND_TOTAL) AS GRANDTOTAL, "
+            + "CODE,  "
+            + "DEALER_NAME,  "
+            + "ACCOUNT_MANAGER "
+            + "FROM   VIEW_POINTS_TOTAL_INC2  "
+            + "GROUP BY    "
+            + "CODE,  "
+            + "DEALER_NAME, "
+            + "ACCOUNT_MANAGER", nativeQuery = true)
+    List<Object []> getViewPointsPerContractMergedInc2();
 
 }
