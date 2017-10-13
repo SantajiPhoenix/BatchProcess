@@ -46,7 +46,7 @@ public class VasReconProcess implements JobProcessor {
         logger.info("Process : " + getJobName());
         c2yList = new ArrayList<>();
         zygoList = new ArrayList<>();
-        for (VasReconProductsView reconProductView : vasReconProductsView) {
+        for (final VasReconProductsView reconProductView : vasReconProductsView) {
             logger.info("***reconProductView info " + reconProductView);
             if (null != reconProductView) {
                 if ("C2Y".equals(reconProductView.getSource())) {
@@ -113,7 +113,7 @@ public class VasReconProcess implements JobProcessor {
         final VasReconData vasReconData = new VasReconData();
         vasReconData.setAction("BEIN");
         vasReconData.setGssId(vasReconDataView.getGssId());
-        vasReconData.setGssProdId(vasReconDataView.getGssId());
+        vasReconData.setGssProdId(vasReconDataView.getGssProdId());
         vasReconData.setC2yCode(vasReconDataView.getCode());
         vasReconData.setStatus(null);
         vasReconData.setSource("ZYGO");
