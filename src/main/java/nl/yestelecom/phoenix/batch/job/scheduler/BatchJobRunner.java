@@ -18,28 +18,32 @@ import nl.yestelecom.phoenix.batch.job.jobstatus.JobStatusRepo;
 import nl.yestelecom.phoenix.batch.job.marketpoints.MarketPointsProcess;
 import nl.yestelecom.phoenix.batch.job.preventel.PreventelProcess;
 import nl.yestelecom.phoenix.batch.job.simoverview.SimOverviewProcess;
+import nl.yestelecom.phoenix.batch.job.vasrecon.VasReconProcess;
 
 @Service
 public class BatchJobRunner {
     private static Logger logger = LoggerFactory.getLogger(BatchJobRunner.class);
 
     @Autowired
-    CiotProcess ciotProcess;
+    private CiotProcess ciotProcess;
 
     @Autowired
-    SimOverviewProcess simOverviewProcess;
+    private SimOverviewProcess simOverviewProcess;
 
     @Autowired
-    MarketPointsProcess marketPointsProcess;
+    private MarketPointsProcess marketPointsProcess;
 
     @Autowired
-    CreditControlProcess creditControlProcess;
+    private CreditControlProcess creditControlProcess;
 
     @Autowired
-    PreventelProcess preventelProcess;
+    private PreventelProcess preventelProcess;
 
     @Autowired
-    JobStatusRepo jobStatusRepo;
+    private JobStatusRepo jobStatusRepo;
+
+    @Autowired
+    private VasReconProcess vasReconProcess;
 
     List<JobProcessor> jobs = new ArrayList<>();
 
@@ -55,31 +59,69 @@ public class BatchJobRunner {
         return jobs;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
     public void runJobs() {
         addJobs();
         for (final JobProcessor job : jobs) {
-            final JobStatus jobStatus = buildJobStaus(job, "RUNNING");
-            jobStatusRepo.save(jobStatus);
-            final long startTime = System.nanoTime();
-            logger.info(" Starting >> " + job.getJobName());
-            try {
-                job.execute();
-                final long endTime = System.nanoTime();
-                final long duration = endTime - startTime;
-                jobStatus.setTimeTaken(duration);
-                jobStatus.setStatus("SUCCESS");
-            } catch (final Exception e) {
-                final long endTime = System.nanoTime();
-                final long duration = endTime - startTime;
-                jobStatus.setTimeTaken(duration);
-                jobStatus.setStatus("FAILED");
-                jobStatus.setError(e.getMessage());
-                logger.error(e.getMessage(), e);
-            }
-            logger.info(" FINISHED >> " + job.getJobName());
-            jobStatusRepo.save(jobStatus);
+            processJob(job);
         }
+
+    }
+
+    @Scheduled(cron = "0 0 3 * * ?")
+    public void runMarketPointsProcess() {
+        processJob(marketPointsProcess);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void runCiotProcess() {
+        processJob(ciotProcess);
+
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void runPreventelProcess() {
+        processJob(preventelProcess);
+
+    }
+
+    @Scheduled(cron = "0 0 5 30 * ?")
+    public void runSimOverviewProcess() {
+        processJob(simOverviewProcess);
+
+    }
+
+    @Scheduled(cron = "0 0 8 10 * ?")
+    public void runCreditControlProcess() {
+        processJob(creditControlProcess);
+
+    }
+
+    public void runVasRecon() {
+        processJob(vasReconProcess);
+    }
+
+    private void processJob(JobProcessor job) {
+        final JobStatus jobStatus = buildJobStaus(job, "RUNNING");
+        jobStatusRepo.save(jobStatus);
+        final long startTime = System.nanoTime();
+        logger.info(" Starting >> " + job.getJobName());
+        try {
+            job.execute();
+            final long endTime = System.nanoTime();
+            final long duration = endTime - startTime;
+            jobStatus.setTimeTaken(duration);
+            jobStatus.setStatus("SUCCESS");
+        } catch (final Exception e) {
+            final long endTime = System.nanoTime();
+            final long duration = endTime - startTime;
+            jobStatus.setTimeTaken(duration);
+            jobStatus.setStatus("FAILED");
+            jobStatus.setError(e.getMessage());
+            logger.error(e.getMessage(), e);
+        }
+        logger.info(" FINISHED >> " + job.getJobName());
+        jobStatusRepo.save(jobStatus);
+
     }
 
     private JobStatus buildJobStaus(JobProcessor job, String status) {

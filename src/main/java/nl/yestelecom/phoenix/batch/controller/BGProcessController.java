@@ -5,62 +5,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import nl.yestelecom.phoenix.batch.job.ciot.CiotProcess;
-import nl.yestelecom.phoenix.batch.job.creditcontrol.CreditControlProcess;
-import nl.yestelecom.phoenix.batch.job.marketpoints.MarketPointsProcess;
-import nl.yestelecom.phoenix.batch.job.preventel.PreventelProcess;
 import nl.yestelecom.phoenix.batch.job.scheduler.BatchJobRunner;
-import nl.yestelecom.phoenix.batch.job.simoverview.SimOverviewProcess;
-import nl.yestelecom.phoenix.batch.job.vasrecon.VasReconProcess;
 
 @RestController
 @RequestMapping("/")
 public class BGProcessController {
 
     @Autowired
-    CreditControlProcess controlProcess;
-    @Autowired
-    CiotProcess ciotProcess;
-    @Autowired
-    SimOverviewProcess simOverviewProcess;
-    @Autowired
-    MarketPointsProcess marketPointsProcess;
-    @Autowired
-    PreventelProcess preventelProcess;
-    @Autowired
-    VasReconProcess vasReconProcess;
-
-    @Autowired
-    BatchJobRunner jobRunner;
+    private BatchJobRunner jobRunner;
 
     @RequestMapping(value = "/creditcontrol", method = RequestMethod.GET)
     public void runCreditControlProcess() {
-        controlProcess.execute();
+        jobRunner.runCreditControlProcess();
     }
 
     @RequestMapping(value = "/ciot", method = RequestMethod.GET)
     public void runCiotProcess() {
-        ciotProcess.execute();
+        jobRunner.runCiotProcess();
     }
 
     @RequestMapping(value = "/simoverview", method = RequestMethod.GET)
     public void runSimOverviewProcess() {
-        simOverviewProcess.execute();
+        jobRunner.runSimOverviewProcess();
     }
 
     @RequestMapping(value = "/marketpoints", method = RequestMethod.GET)
     public void runMarketPointsProcess() {
-        marketPointsProcess.execute();
+        jobRunner.runMarketPointsProcess();
+
     }
 
     @RequestMapping(value = "/preventel", method = RequestMethod.GET)
     public void runPreventelProcess() {
-        preventelProcess.execute();
+        jobRunner.runPreventelProcess();
     }
 
     @RequestMapping(value = "/vasrecon", method = RequestMethod.GET)
     public void runVasReconProcess() {
-        vasReconProcess.execute();
+        jobRunner.runVasRecon();
     }
 
     @RequestMapping(value = "/runAllJobs", method = RequestMethod.GET)
