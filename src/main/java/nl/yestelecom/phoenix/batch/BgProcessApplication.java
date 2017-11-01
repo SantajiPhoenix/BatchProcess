@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = { "nl.yestelecom.phoenix", "nl.yestelecom.phoenix.batch" }, considerNestedRepositories = true)
 @ComponentScan(basePackages = { "nl.yestelecom.phoenix", "nl.yestelecom.phoenix.batch" })
-@PropertySource(value = { "file:/opt/phoenix/configuration/database.properties", "file:/opt/phoenix/configuration/backgroudjobs.properties", "file:/opt/phoenix/configuration/ciot-rsa-key.properties"})
+@PropertySource(value = { "file:/opt/phoenix/configuration/database.properties", "file:/opt/phoenix/configuration/backgroudjobs.properties"})
 @EnableScheduling
 public class BgProcessApplication {
 

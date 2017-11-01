@@ -76,20 +76,20 @@ public class CiotProcess implements JobProcessor {
 
     @Override
     public void send() {
-        logger.info("Send : " + getJobName());
+       /* logger.info("Send : " + getJobName());
         ciotEmailSender.setEmailDetails(emailDetails);
         ciotEmailSender.accept(senderVisitor);
 
         ciotFTPSender.setSequence(sequence);
-        ciotFTPSender.accept(senderVisitor);
+        ciotFTPSender.accept(senderVisitor);*/
 
     }
 
     @Override
     public void postProcess() {
-        logger.info("Post Process : " + getJobName());
+        /*logger.info("Post Process : " + getJobName());
         archiveFileCreator.setFileDirecotry(fileDirecotry);
-        archiveFileCreator.archiveCurrentFile();
+        archiveFileCreator.archiveCurrentFile();*/
 
     }
 

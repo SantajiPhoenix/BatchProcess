@@ -85,9 +85,9 @@ public class PreventelProcess implements JobProcessor {
 
     @Override
     public void send() {
-        logger.info("Send : " + getJobName());
+       /* logger.info("Send : " + getJobName());
         preventelEmailSender.setEmailDetails(emailDetails);
-        preventelEmailSender.accept(senderVisitor);
+        preventelEmailSender.accept(senderVisitor);*/
 
     }
 

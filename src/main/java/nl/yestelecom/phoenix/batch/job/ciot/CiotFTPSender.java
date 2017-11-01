@@ -9,21 +9,21 @@ import nl.yestelecom.phoenix.batch.sender.ftp.FTPSender;
 @Service
 public class CiotFTPSender implements FTPSender {
 
-	@Value("${ciot.ftp.host}")
+	//@Value("${ciot.ftp.host}")
 	private String sftpHost;
-	@Value("${ciot.ftp.port}")
+	//@Value("${ciot.ftp.port}")
 	private int sftpPort;
-	@Value("${ciot.ftp.username}")
+	//@Value("${ciot.ftp.username}")
 	private String username;
-	@Value("${ciot.ftp.password}")
+	//@Value("${ciot.ftp.password}")
 	private String password;
-	@Value("${ciot.ftp.privateKey}")
+	//@Value("${ciot.ftp.privateKey}")
 	private String privateKey;
-	@Value("${ciot.ftp.remoteDirectory}")
+	//@Value("${ciot.ftp.remoteDirectory}")
 	private String remoteDirectory;
-	@Value("${ciot.fileName}")
+	//@Value("${ciot.fileName}")
 	private String fileName;
-	@Value("${ciot.filePath}")
+	//@Value("${ciot.filePath}")
 	private String filePath;
 
 	private String sequence;
