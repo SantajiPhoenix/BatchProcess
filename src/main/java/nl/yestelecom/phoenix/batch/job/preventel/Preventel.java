@@ -14,7 +14,10 @@ public class Preventel {
 
 	@Column(name = "STATUS")
 	private String status;
-
+	
+	@Column(name = "SOORT_DIENST")
+	private String serviceType;
+    
 	@Column(name = "ID_PROVIDER")
 	private String idProvider;
 
@@ -40,8 +43,11 @@ public class Preventel {
 	@Column(name = "RELATIEVOORLETTERS")
 	private String initials;
 
-	@Column(name = "RELATIEVOORVOEGSEL")
-	private String prefix;
+	@Column(name = "firstname")
+	private String firstname;
+	
+	@Column(name = "lastname")
+	private String lastname;
 
 	@Column(name = "BANKACCOUNT")
 	private String bankAccount;
@@ -66,6 +72,9 @@ public class Preventel {
 
 	@Column(name = "FAX")
 	private String fax;
+	
+	@Column(name = "EMAIL")
+	private String email;
 
 	@Column(name = "POSTBUS")
 	private String postBox;
@@ -79,14 +88,13 @@ public class Preventel {
 	@Column(name = "REGISTRATIEDATUM")
 	private String registration;
 
-	@Column(name = "EMPTYSPACE")
-	private String emptyspace;
+
 
 	@Override
 	public String toString() {
 		return status + idProvider + relationType + companyName + zygoNumber + relationshipBusinessCode + createdDate
-				+ country + initials + prefix + bankAccount + idNumber + houseNumber + postCode + street + city
-				+ telephone + fax + postBox + postCodePostBus + addition + registration + emptyspace;
+				+ country + initials +firstname + lastname + bankAccount + idNumber + houseNumber + postCode + street + city
+				+ telephone + fax + postBox + postCodePostBus + addition + registration ;
 	}
 
 }
