@@ -67,30 +67,30 @@ public class BatchJobRunner {
 
     }
 
-    @Scheduled(cron = "0 0 5 * * ?")
+    @Scheduled(cron = "${marketpoints.job.runtime}")
     public void runMarketPointsProcess() {
         processJob(marketPointsProcess);
     }
 
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "${ciot.job.runtime}")
     public void runCiotProcess() {
         processJob(ciotProcess);
 
     }
 
-    @Scheduled(cron = "0 0 4 * * ?")
+    @Scheduled(cron = "${preventel.job.runtime}")
     public void runPreventelProcess() {
         processJob(preventelProcess);
 
     }
 
-    @Scheduled(cron = "0 0 5 * * MON-WED")
+    @Scheduled(cron = "${simoverview.job.runtime}")
     public void runSimOverviewProcess() {
         processJob(simOverviewProcess);
 
     }
 
-    @Scheduled(cron = "0 0 23 15 * ?")
+    @Scheduled(cron = "${creditcontrol.job.runtime}")
     public void runCreditControlProcess() {
         processJob(creditControlProcess);
 
