@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import nl.yestelecom.phoenix.batch.job.scheduler.BatchJobRunner;
+import nl.yestelecom.phoenix.batch.portingrequestreport.FailedPortingRequestProcessor;
 
 @RestController
 @RequestMapping("/")
@@ -13,6 +14,9 @@ public class BGProcessController {
 
     @Autowired
     private BatchJobRunner jobRunner;
+
+    @Autowired
+    private FailedPortingRequestProcessor failedPortingRequestProcessor;
 
     @RequestMapping(value = "/creditcontrol", method = RequestMethod.GET)
     public void runCreditControlProcess() {
@@ -43,6 +47,13 @@ public class BGProcessController {
     @RequestMapping(value = "/vasrecon", method = RequestMethod.GET)
     public void runVasReconProcess() {
         jobRunner.runVasRecon();
+    }
+
+    @RequestMapping(value = "/getfailedporting", method = RequestMethod.GET)
+    public void getFailedPortingRequest() {
+
+        jobRunner.getFailedPortingRequests();
+
     }
 
     @RequestMapping(value = "/runAllJobs", method = RequestMethod.GET)

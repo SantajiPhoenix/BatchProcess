@@ -19,6 +19,7 @@ import nl.yestelecom.phoenix.batch.job.marketpoints.MarketPointsProcess;
 import nl.yestelecom.phoenix.batch.job.preventel.PreventelProcess;
 import nl.yestelecom.phoenix.batch.job.simoverview.SimOverviewProcess;
 import nl.yestelecom.phoenix.batch.job.vasrecon.VasReconProcess;
+import nl.yestelecom.phoenix.batch.portingrequestreport.FailedPortingRequestProcessor;
 
 @Service
 public class BatchJobRunner {
@@ -45,6 +46,9 @@ public class BatchJobRunner {
     @Autowired
     private VasReconProcess vasReconProcess;
 
+    @Autowired
+    private FailedPortingRequestProcessor failedPortingRequestProcessor;
+
     List<JobProcessor> jobs = new ArrayList<>();
 
     public void addJobs() {
@@ -53,6 +57,7 @@ public class BatchJobRunner {
         jobs.add(simOverviewProcess);
         jobs.add(creditControlProcess);
         jobs.add(marketPointsProcess);
+        jobs.add(failedPortingRequestProcessor);
     }
 
     public List<JobProcessor> getJobs() {
@@ -98,6 +103,11 @@ public class BatchJobRunner {
 
     public void runVasRecon() {
         processJob(vasReconProcess);
+    }
+
+    @Scheduled(cron = "${porting.job.runtime}")
+    public void getFailedPortingRequests() {
+        processJob(failedPortingRequestProcessor);
     }
 
     private void processJob(JobProcessor job) {
