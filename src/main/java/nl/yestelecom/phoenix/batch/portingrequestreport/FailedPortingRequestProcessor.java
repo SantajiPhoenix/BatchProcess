@@ -42,6 +42,7 @@ public class FailedPortingRequestProcessor implements JobProcessor {
 
     @Override
     public void process() {
+        mailText = "";
         if (null != portingObjectList && !portingObjectList.isEmpty()) {
             failedPortingObjectList = new ArrayList<>();
             logger.info("Size is " + portingObjectList.size());
