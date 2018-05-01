@@ -118,9 +118,10 @@ public class SimOverviewProcess implements JobProcessor {
                 simOverview.setNecessary(simTypeCountObj.getCount());
             }
         }
-        grossStock = simOverview.getY32KCount() + simOverview.getUSIMCount() + simOverview.getUSIMDUOCount();
+        grossStock = simOverviewHelper.getTypeCount(simOverview.getY32KCount()) + simOverviewHelper.getTypeCount(simOverview.getUSIMCount())
+                + simOverviewHelper.getTypeCount(simOverview.getUSIMDUOCount());
         simOverview.setGrossStock(grossStock);
-        simOverview.setNetStock(simOverview.getGrossStock() - simOverview.getNecessary());
+        simOverview.setNetStock(simOverview.getGrossStock() - simOverviewHelper.getTypeCount(simOverview.getNecessary()));
         simOverview.setMainDealerName("");
         simOverview.setDealerName("Totaal bij Business Partners");
         return simOverview;
