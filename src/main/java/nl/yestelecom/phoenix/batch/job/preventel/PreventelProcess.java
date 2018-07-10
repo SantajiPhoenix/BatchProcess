@@ -9,116 +9,77 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
-import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
-import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
-import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 import nl.yestelecom.phoenix.batch.writer.WriteVisitor;
 
 @Service
 public class PreventelProcess implements JobProcessor {
 
-	private static Logger logger = LoggerFactory.getLogger(PreventelProcess.class);
+    private static Logger logger = LoggerFactory.getLogger(PreventelProcess.class);
 
-	@Autowired
-	private PreventelRepository preventelRepo;
-	/*
-	 * @Autowired private PreventelTxtWriter preventelTxtWriter;
-	 */
-	@Autowired
-	private PreventelCsvWriter preventelCsvWriter;
-	@Autowired
-	private PreventelFileFormat preventelFileFormat;
-	@Autowired
-	private PreventelUtil preventelUtil;
-	@Autowired
-	private WriteVisitor writerVisitorImpl;
-	@Autowired
-	private PreventelEmailSender preventelEmailSender;
-	@Autowired
-	private EmailDetailsRepo emailDetailsRepo;
-	@Autowired
-	private SenderVisitor senderVisitor;
+    @Autowired
+    private PreventelRepository preventelRepo;
+    @Autowired
+    private PreventelCsvWriter preventelCsvWriter;
+    @Autowired
+    private PreventelFileFormat preventelFileFormat;
+    @Autowired
+    private PreventelUtil preventelUtil;
+    @Autowired
+    private WriteVisitor writerVisitorImpl;
 
-	@Value("${preventel.fileName}")
-	private String fileName;
-	@Value("${preventel.jobname}")
-	private String jobName;
-	@Value("${preventel.filePath}")
-	private String fileDirecotry;
+    @Value("${preventel.fileName}")
+    private String fileName;
+    @Value("${preventel.jobname}")
+    private String jobName;
+    @Value("${preventel.filePath}")
+    private String fileDirecotry;
 
-	@Value("${preventel.column}")
-	private String cloumnNames;
+    @Value("${preventel.column}")
+    private String cloumnNames;
 
-	private List<Preventel> preventelList;
-	private List<String> preventelDataList;
-	private String sequence;
-	private EmailDetails emailDetails;
+    private List<Preventel> preventelList;
+    private String sequence;
 
-	List<String> preventelDataToWrite;
+    List<String> preventelDataToWrite;
 
-	@Override
-	public void read() {
-		logger.info("Read : " + getJobName());
-		preventelList = preventelRepo.findAll();
-		logger.info("Feteched >> " + preventelList.size() + "  records ");
-		emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
+    @Override
+    public void read() {
+        logger.info("Read : " + getJobName());
+        preventelList = preventelRepo.findAll();
+        logger.info("Feteched >> " + preventelList.size() + "  records ");
 
-	}
+    }
 
-	@Override
-	public void process() {
-		logger.info("Process : " + getJobName());
+    @Override
+    public void process() {
+        logger.info("Process : " + getJobName());
 
-		preventelDataToWrite = preventelFileFormat.formatPreventelData(preventelList);
-		sequence = preventelUtil.getDate() + "V1.csv";
+        preventelDataToWrite = preventelFileFormat.formatPreventelData(preventelList);
+        sequence = preventelUtil.getDate() + "V1.csv";
 
-		/*
-		 * preventelDataList = new ArrayList<>(); int count = 0; final String
-		 * startRow = preventelUtil.rightPad("A" + fileName + sequence, 330);
-		 * String endRow = preventelUtil.rightPad("Z" + fileName + sequence,14);
-		 * 
-		 * 
-		 * preventelDataList.add(startRow); for (final Preventel preventelData :
-		 * preventelList) { preventelDataList.add(preventelData.toString());
-		 * count++; }
-		 * 
-		 * endRow = preventelUtil.rightPad(endRow + count, 330);
-		 * preventelDataList.add(endRow);
-		 */
-	}
+    }
 
-	@Override
-	public void write() {
-		logger.info("Write : " + getJobName());
-		preventelCsvWriter.setFilename(fileName + sequence);
-		preventelCsvWriter.setHeader(cloumnNames);
-		preventelCsvWriter.setRowList(preventelDataToWrite);
-		preventelCsvWriter.accept(writerVisitorImpl);
+    @Override
+    public void write() {
+        logger.info("Write : " + getJobName());
+        preventelCsvWriter.setFilename(fileName + sequence);
+        preventelCsvWriter.setHeader(cloumnNames);
+        preventelCsvWriter.setRowList(preventelDataToWrite);
+        preventelCsvWriter.accept(writerVisitorImpl);
 
-		// preventelTxtWriter.setSequence(sequence);
-		// preventelTxtWriter.setData(preventelDataList);
-		// preventelTxtWriter.accept(writerVisitorImpl);
+    }
 
-	}
+    @Override
+    public void send() {
+    }
 
-	@Override
-	public void send() {
-		// logger.info("Send : " + getJobName());
-		// preventelEmailSender.setEmailDetails(emailDetails);
-		// preventelEmailSender.accept(senderVisitor);
+    @Override
+    public void postProcess() {
+    }
 
-	}
-
-	@Override
-	public void postProcess() {
-		// logger.info("Post Process : " + getJobName());
-		// archiveFileCreator.setFileDirecotry(fileDirecotry);
-		// archiveFileCreator.archiveCurrentFile();
-	}
-
-	@Override
-	public String getJobName() {
-		return jobName;
-	}
+    @Override
+    public String getJobName() {
+        return jobName;
+    }
 
 }
