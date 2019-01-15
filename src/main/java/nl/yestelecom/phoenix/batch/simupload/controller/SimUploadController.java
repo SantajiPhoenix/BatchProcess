@@ -18,7 +18,7 @@ public class SimUploadController {
     @Autowired
     SimLoadM2MService simLoadM2MService;
 
-    @RequestMapping(value = "/loadSim", method = RequestMethod.POST)
+    @RequestMapping(value = "/loadSim", method = RequestMethod.GET)
     public void getSimList() {
         simLoadService.processSimDetails();
     }
