@@ -128,9 +128,9 @@ public class VasReconProcess implements JobProcessor {
             vasReconDataRepository.deleteAllInBatch();
         }
         logger.info("Write : " + getJobName());
-        vasReconDataRepository.save(zygoList);
-        vasReconDataRepository.save(c2yList);
-        vasReconDataRepository.save(priceList);
+        vasReconDataRepository.saveAll(zygoList);
+        vasReconDataRepository.saveAll(c2yList);
+        vasReconDataRepository.saveAll(priceList);
 
     }
 

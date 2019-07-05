@@ -82,13 +82,13 @@ public class SimLoadM2MService {
         logger.info("Size is >> " + simList.size());
 
         simLoadRepository.deleteAll();
-        simLoadRepository.save(simList);
+        simLoadRepository.saveAll(simList);
 
         final List<Sim> simListToSave = getSimsToLoad(simList);
         final List<GsmNumber> gsmNumberToSave = getGsmNumberToSave(simList);
 
-        simRepository.save(simListToSave);
-        gsmNumberRepository.save(gsmNumberToSave);
+        simRepository.saveAll(simListToSave);
+        gsmNumberRepository.saveAll(gsmNumberToSave);
         extractSimsForZygo(simList);
 
         logger.info("Process Completed");
@@ -116,7 +116,7 @@ public class SimLoadM2MService {
     }
 
     private List<Sim> getSimsToLoad(List<LoadSim> simList) {
-        final Dealer dealer = dealerRepository.findById(new Long(1));
+        final Dealer dealer = dealerRepository.findById(new Long(1)).orElse(null);
         final SimStatus unassigned = simStatusRepository.findByCode("UNASSIGNED");
         final List<Sim> simListToSave = new ArrayList<>();
         for (final LoadSim loadSim : simList) {

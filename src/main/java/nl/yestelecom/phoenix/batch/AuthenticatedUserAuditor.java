@@ -1,5 +1,7 @@
 package nl.yestelecom.phoenix.batch;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.AuditorAware;
@@ -14,7 +16,7 @@ public class AuthenticatedUserAuditor implements AuditorAware<Long> {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticatedUserAuditor.class);
 
     @Override
-    public Long getCurrentAuditor() {
+    public Optional<Long> getCurrentAuditor() {
         Long auditorId;
         try {
             auditorId = ((UserAwareUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser().getId();
@@ -22,7 +24,7 @@ public class AuthenticatedUserAuditor implements AuditorAware<Long> {
             auditorId = 9999L;
             LOGGER.error("Error while extracting logged in user information, hence setting default auditorId {}", auditorId, ex);
         }
-        return auditorId;
+        return Optional.of(auditorId);
     }
 
     public User getCurrentAuditorRecord() {

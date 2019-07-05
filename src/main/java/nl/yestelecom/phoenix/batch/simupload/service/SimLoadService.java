@@ -84,9 +84,9 @@ public class SimLoadService {
 
             }
 
-            simLoadRepository.save(simListToSaveInLoad);
+            simLoadRepository.saveAll(simListToSaveInLoad);
 
-            simRepository.save(simListToSave);
+            simRepository.saveAll(simListToSave);
 
             extractSimsForZygo(simListToSaveInLoad);
 
