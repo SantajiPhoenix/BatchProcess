@@ -36,7 +36,7 @@ import nl.yestelecom.phoenix.sim.repository.SimRepository;
 @Configuration
 public class SimLoadM2MService {
 
-    private static Logger logger = LoggerFactory.getLogger(SimLoadService.class);
+    private static Logger logger = LoggerFactory.getLogger(SimLoadM2MService.class);
 
     @Value("${simUpload.m2m.response.file}")
     private String responseFileName;

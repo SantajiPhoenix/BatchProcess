@@ -22,7 +22,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<lombok.version>1.16.4</lombok.version>
+		
+<!-- 		<lombok.version>1.16.4</lombok.version> -->
+		<lombok.version>1.18.4</lombok.version>
+		
 		<ojdbc.version>12.1.0.1.0</ojdbc.version>
 		
 		<!-- <slf4j.version>1.6.4</slf4j.version> -->
@@ -91,7 +94,7 @@
 		</dependency>
 		<dependency>
 			<groupId>nl.yestelecom</groupId>
-			<artifactId>phoenix-model</artifactId>
+			<artifactId>phoenix-model-SBU</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
