@@ -36,6 +36,9 @@ public class Preventel {
 
 	@Column(name = "RELATIEDATUM")
 	private String createdDate;
+	
+	@Column(name = "BIRTHDATE")
+	private String birthdate;
 
 	@Column(name = "COUNTRY")
 	private String country;
@@ -92,7 +95,7 @@ public class Preventel {
 
 	@Override
 	public String toString() {
-		return status + idProvider + relationType + companyName + zygoNumber + relationshipBusinessCode + createdDate
+		return status + idProvider + relationType + companyName + zygoNumber + relationshipBusinessCode + birthdate + createdDate
 				+ country + initials +firstname + lastname + bankAccount + idNumber + houseNumber + postCode + street + city
 				+ telephone + fax + postBox + postCodePostBus + addition + registration ;
 	}

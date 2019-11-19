@@ -29,6 +29,7 @@ public class PreventelFileFormat {
 			        + preventel.getFirstname() + CSV_FILE_DELIMETER
 			        + preventel.getInitials() + CSV_FILE_DELIMETER
 			        + preventel.getLastname() + CSV_FILE_DELIMETER
+			        + preventel.getBirthdate() + CSV_FILE_DELIMETER
 					+ preventel.getIdNumber() + CSV_FILE_DELIMETER
 					+ preventel.getCompanyName() + CSV_FILE_DELIMETER
 					+ preventel.getRelationshipBusinessCode() + CSV_FILE_DELIMETER
