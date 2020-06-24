@@ -39,6 +39,10 @@ public class SimLoadService {
 
     @Value("${simupload.requestfile.path}")
     private String requestPath;
+    @Value("${simUpload.zygo.remotedirectory8digit}")
+    private String zygoPath8;
+    @Value("${simUpload.zygo.remotedirectory19digit}")
+    private String zygoPath19;
 
     @Autowired
     SimLoadRepository simLoadRepository;
@@ -83,7 +87,7 @@ public class SimLoadService {
                 simListToSaveInLoad.add(loadSim);
 
             }
-
+            setZygoRemoteDirectoryPath(simListToSave);
             simLoadRepository.saveAll(simListToSaveInLoad);
 
             simRepository.saveAll(simListToSave);
@@ -93,6 +97,11 @@ public class SimLoadService {
         } catch (final Exception e) {
             logger.error("Error is >> " + e);
         }
+    }
+
+    private void setZygoRemoteDirectoryPath(final List<Sim> simListToSave) {
+        final String zygoPath = 8 == simListToSave.get(0).getSimNo().length() ? zygoPath8 : zygoPath19;
+        zygoFtpConfiguration.setRemoteSimpUploadDirectory(zygoPath);
     }
 
     public void processPukDetails() {

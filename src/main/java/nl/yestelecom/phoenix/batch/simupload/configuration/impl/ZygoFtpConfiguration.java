@@ -65,4 +65,7 @@ public class ZygoFtpConfiguration implements FTPConfiguration {
         return remoteSimpUploadDirectory;
     }
 
+    public void setRemoteSimpUploadDirectory(String remoteSimpUploadDirectory) {
+        this.remoteSimpUploadDirectory = remoteSimpUploadDirectory;
+    }
 }

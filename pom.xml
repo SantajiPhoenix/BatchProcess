@@ -5,7 +5,7 @@
 
 	<groupId>nl.yestelecom.phoenix.batch</groupId>
 	<artifactId>batchprocess</artifactId>
-	<version>1.2.7</version>
+	<version>1.2.8</version>
 	<packaging>jar</packaging>
 
 	<name>batchprocess</name>
@@ -94,7 +94,7 @@
 		</dependency>
 		<dependency>
 			<groupId>nl.yestelecom</groupId>
-			<artifactId>phoenix-model-SBU</artifactId>
+			<artifactId>phoenix-model</artifactId>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework.boot</groupId>
