@@ -22,7 +22,6 @@ public class ZygoFtpConfiguration implements FTPConfiguration {
     private String remoteDirectory;
     @Value("${pukUpload.zygo.remotedirectory}")
     private String remotepukDirectory;
-    @Value("${simUpload.zygo.remotedirectory}")
     private String remoteSimpUploadDirectory;
 
     @Override
