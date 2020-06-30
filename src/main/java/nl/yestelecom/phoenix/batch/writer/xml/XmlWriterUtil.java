@@ -26,11 +26,10 @@ public class XmlWriterUtil {
     private String filePath;
     private String templateName;
     private Map<String, Object> xmlData;
-    private String xmlContent;
+    private String xmlContent = "";
 
     public void generateXML() {
         logger.info("Writing file >> " + fileName);
-        xmlContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
         final Context ctx = new Context(LocaleContextHolder.getLocale(), xmlData);
         xmlContent += templateEngineXML.process(templateName, ctx);
     }
