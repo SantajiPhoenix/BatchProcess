@@ -31,7 +31,7 @@ public class XmlWriterUtil {
     public void generateXML() {
         logger.info("Writing file >> " + fileName);
         final Context ctx = new Context(LocaleContextHolder.getLocale(), xmlData);
-        xmlContent += templateEngineXML.process(templateName, ctx);
+        xmlContent = templateEngineXML.process(templateName, ctx);
     }
 
     public void write() {
