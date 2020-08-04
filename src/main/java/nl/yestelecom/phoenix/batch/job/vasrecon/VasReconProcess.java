@@ -1,22 +1,30 @@
 package nl.yestelecom.phoenix.batch.job.vasrecon;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
+import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetails;
+import nl.yestelecom.phoenix.batch.job.emaildetails.EmailDetailsRepo;
 import nl.yestelecom.phoenix.batch.job.vasrecon.model.VasReconData;
 import nl.yestelecom.phoenix.batch.job.vasrecon.model.VasReconPriceView;
 import nl.yestelecom.phoenix.batch.job.vasrecon.model.VasReconProductsView;
 import nl.yestelecom.phoenix.batch.job.vasrecon.repo.VasReconDataRepository;
 import nl.yestelecom.phoenix.batch.job.vasrecon.repo.VasReconPriceViewRepo;
 import nl.yestelecom.phoenix.batch.job.vasrecon.repo.VasReconRepository;
+import nl.yestelecom.phoenix.batch.sender.SenderVisitor;
 
 @Service
+@Transactional
 public class VasReconProcess implements JobProcessor {
     private static Logger logger = LoggerFactory.getLogger(VasReconProcess.class);
 
@@ -26,17 +34,31 @@ public class VasReconProcess implements JobProcessor {
     VasReconDataRepository vasReconDataRepository;
     @Autowired
     VasReconPriceViewRepo vasReconPriceViewRepo;
+    @Autowired
+    GenerateExcelForVasRecon generateExcelForVasRecon;
+    @Autowired
+    VasReconEmailSender vasReconEmailSender;
+    @Autowired
+    SenderVisitor senderVisitor;
+
+    @Autowired
+    EmailDetailsRepo emailDetailsRepo;
+
+    @Value("${vasrecon.jobname}")
+    private String jobName;
 
     List<VasReconProductsView> vasReconProductsView;
     List<VasReconPriceView> vasPriceReconView;
     List<VasReconData> c2yList;
     List<VasReconData> zygoList;
     List<VasReconData> priceList;
+    EmailDetails emailDetails;
 
     @Override
     public void read() {
         logger.info("Read : " + getJobName());
 
+        emailDetails = emailDetailsRepo.getEmailDetailsForJob(getJobName());
         vasReconProductsView = vasReconRepository.findAll();
         vasPriceReconView = vasReconPriceViewRepo.findAll();
     }
@@ -131,14 +153,18 @@ public class VasReconProcess implements JobProcessor {
         vasReconDataRepository.saveAll(zygoList);
         vasReconDataRepository.saveAll(c2yList);
         vasReconDataRepository.saveAll(priceList);
-
+        try {
+            generateExcelForVasRecon.generateExcel();
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void send() {
-        /*
-         * To Implemented in sub clasess
-         */
+        logger.info("Send : " + getJobName());
+        vasReconEmailSender.setEmailDetails(emailDetails);
+        vasReconEmailSender.accept(senderVisitor);
     }
 
     @Override
@@ -151,7 +177,7 @@ public class VasReconProcess implements JobProcessor {
 
     @Override
     public String getJobName() {
-        return "VAS_RECON";
+        return jobName;
 
     }
 
