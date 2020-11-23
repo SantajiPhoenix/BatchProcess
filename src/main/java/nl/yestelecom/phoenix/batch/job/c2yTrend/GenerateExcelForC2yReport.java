@@ -76,39 +76,15 @@ public class GenerateExcelForC2yReport {
         final XSSFWorkbook workbook = new XSSFWorkbook();
         final XSSFSheet sheet = workbook.createSheet();
         int rowCount = 0;
-        createHeaderRowForTodaysTrend(sheet, rowCount);
-        rowCount = rowCount + 1;
-        final XSSFRow rowfirst = sheet.createRow(rowCount++);
-        int colIndexfirst = 0;
-        rowfirst.createCell(colIndexfirst++).setCellValue(null != findTodaysTrend.getActiveConnCount() ? findTodaysTrend.getActiveConnCount() : 0);
-        rowfirst.createCell(colIndexfirst++).setCellValue(null != findTodaysTrend.getActiveCusCount() ? findTodaysTrend.getActiveCusCount() : 0);
-        rowfirst.createCell(colIndexfirst++).setCellValue(null != findTodaysTrend.getActiveDlrCount() ? findTodaysTrend.getActiveDlrCount() : 0);
-        createHeaderRowForConnectionType(sheet, rowCount);
-        rowCount = rowCount + 1;
-        for (final ConnectionList c : findTypeOfConnectionCountList) {
-            final XSSFRow row = sheet.createRow(rowCount++);
-            int colIndex = 0;
-            row.createCell(colIndex++).setCellValue(null != c.getType() ? c.getType() : null);
-            row.createCell(colIndex++).setCellValue(null != c.getOutportConnCount() ? c.getOutportConnCount() : 0);
-        }
-        createHeaderRowForOutport(sheet, rowCount);
-        rowCount = rowCount + 1;
-        for (final FutureOutport c : findfutureOutportlist) {
-            final XSSFRow row = sheet.createRow(rowCount++);
-            int colIndex = 0;
-            row.createCell(colIndex++).setCellValue(null != c.getMONTH() ? c.getMONTH() : null);
-            row.createCell(colIndex++).setCellValue(null != c.getFuture_Outport_Count() ? c.getFuture_Outport_Count() : 0);
-        }
+        rowCount = todaysTrend(findTodaysTrend, sheet, rowCount);
+        rowCount = fillconnectionType(findTypeOfConnectionCountList, sheet, rowCount);
+        rowCount = fillFutureOutport(findfutureOutportlist, sheet, rowCount);
+        rowCount = fillFutureTermination(findfutureTerminationlist, sheet, rowCount);
+        fillC2yTrend(c2yTrends, sheet, rowCount);
+        return workbook;
+    }
 
-        createHeaderRowForTermination(sheet, rowCount);
-        rowCount = rowCount + 1;
-        for (final FutureTerimination c : findfutureTerminationlist) {
-            final XSSFRow row = sheet.createRow(rowCount++);
-            int colIndex = 0;
-            row.createCell(colIndex++).setCellValue(null != c.getMONTH() ? c.getMONTH() : null);
-            row.createCell(colIndex++).setCellValue(null != c.getTERMINATION_FUTURE_COUNT() ? c.getTERMINATION_FUTURE_COUNT() : 0);
-        }
-
+    private void fillC2yTrend(List<C2yReport> c2yTrends, final XSSFSheet sheet, int rowCount) {
         createHeaderRow(sheet, rowCount);
         rowCount = rowCount + 1;
         for (final C2yReport c : c2yTrends) {
@@ -120,7 +96,53 @@ public class GenerateExcelForC2yReport {
             row.createCell(colIndex++).setCellValue(null != c.getActiveCusCount() ? c.getActiveCusCount() : 0);
             row.createCell(colIndex++).setCellValue(null != c.getActiveDlrCount() ? c.getActiveDlrCount() : 0);
         }
-        return workbook;
+    }
+
+    private int fillFutureTermination(List<FutureTerimination> findfutureTerminationlist, final XSSFSheet sheet, int rowCount) {
+        createHeaderRowForTermination(sheet, rowCount);
+        rowCount = rowCount + 1;
+        for (final FutureTerimination c : findfutureTerminationlist) {
+            final XSSFRow row = sheet.createRow(rowCount++);
+            int colIndex = 0;
+            row.createCell(colIndex++).setCellValue(null != c.getMONTH() ? c.getMONTH() : null);
+            row.createCell(colIndex++).setCellValue(null != c.getTERMINATION_FUTURE_COUNT() ? c.getTERMINATION_FUTURE_COUNT() : 0);
+        }
+        return rowCount;
+    }
+
+    private int fillFutureOutport(List<FutureOutport> findfutureOutportlist, final XSSFSheet sheet, int rowCount) {
+        createHeaderRowForOutport(sheet, rowCount);
+        rowCount = rowCount + 1;
+        for (final FutureOutport c : findfutureOutportlist) {
+            final XSSFRow row = sheet.createRow(rowCount++);
+            int colIndex = 0;
+            row.createCell(colIndex++).setCellValue(null != c.getMONTH() ? c.getMONTH() : null);
+            row.createCell(colIndex++).setCellValue(null != c.getFuture_Outport_Count() ? c.getFuture_Outport_Count() : 0);
+        }
+        return rowCount;
+    }
+
+    private int fillconnectionType(List<ConnectionList> findTypeOfConnectionCountList, final XSSFSheet sheet, int rowCount) {
+        createHeaderRowForConnectionType(sheet, rowCount);
+        rowCount = rowCount + 1;
+        for (final ConnectionList c : findTypeOfConnectionCountList) {
+            final XSSFRow row = sheet.createRow(rowCount++);
+            int colIndex = 0;
+            row.createCell(colIndex++).setCellValue(null != c.getType() ? c.getType() : null);
+            row.createCell(colIndex++).setCellValue(null != c.getOutportConnCount() ? c.getOutportConnCount() : 0);
+        }
+        return rowCount;
+    }
+
+    private int todaysTrend(TodaysTrend findTodaysTrend, final XSSFSheet sheet, int rowCount) {
+        createHeaderRowForTodaysTrend(sheet, rowCount);
+        rowCount = rowCount + 1;
+        final XSSFRow rowfirst = sheet.createRow(rowCount++);
+        int colIndexfirst = 0;
+        rowfirst.createCell(colIndexfirst++).setCellValue(null != findTodaysTrend.getActiveConnCount() ? findTodaysTrend.getActiveConnCount() : 0);
+        rowfirst.createCell(colIndexfirst++).setCellValue(null != findTodaysTrend.getActiveCusCount() ? findTodaysTrend.getActiveCusCount() : 0);
+        rowfirst.createCell(colIndexfirst++).setCellValue(null != findTodaysTrend.getActiveDlrCount() ? findTodaysTrend.getActiveDlrCount() : 0);
+        return rowCount;
     }
 
     private void createHeaderRowForTodaysTrend(XSSFSheet sheet, int rowCount) {
