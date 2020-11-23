@@ -48,14 +48,11 @@ public class GenerateExcelForC2yReport {
     @Value("${c2yreport.filePath}")
     private String filePath;
 
-    public File generateExcel() {
+    public File generateExcel(List<C2yReport> c2yTrends, List<FutureTerimination> findfutureTerminationlist, List<FutureOutport> findfutureOutportlist,
+            List<ConnectionList> findTypeOfConnectionCountList, TodaysTrend findTodaysTrend) {
         File outFile = null;
         try {
-            final List<C2yReport> c2yTrends = c2yReportRepository.findc2ywithid();
-            final List<FutureTerimination> findfutureTerminationlist = futureTeriminationRepo.findfutureTermination();
-            final List<FutureOutport> findfutureOutportlist = futureOutportRepo.findfutureOutport();
-            final List<ConnectionList> findTypeOfConnectionCountList = connectionListRepo.findTypeOfConnectionCount();
-            final TodaysTrend findTodaysTrend = todaysTrendRepo.findTodaysTrend();
+
             FileOutputStream fos = null;
             XSSFWorkbook workbook;
             workbook = generateXls(c2yTrends, findfutureTerminationlist, findfutureOutportlist, findTypeOfConnectionCountList, findTodaysTrend);
