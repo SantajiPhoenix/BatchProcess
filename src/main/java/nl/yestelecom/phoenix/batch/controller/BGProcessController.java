@@ -1,6 +1,7 @@
 package nl.yestelecom.phoenix.batch.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +44,12 @@ public class BGProcessController {
     @RequestMapping(value = "/preventel", method = RequestMethod.GET)
     public void runPreventelProcess() {
         jobRunner.runPreventelProcess();
+    }
+
+    @Scheduled(cron = "0 0 5 * * MON")
+    @RequestMapping(value = "/genearateC2y", method = RequestMethod.GET)
+    public void generateC2yReport() {
+        jobRunner.generateC2yReport();
     }
 
     @RequestMapping(value = "/vasrecon", method = RequestMethod.GET)

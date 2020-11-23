@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import nl.yestelecom.phoenix.batch.job.JobProcessor;
+import nl.yestelecom.phoenix.batch.job.c2yTrend.C2yReportProcessor;
 import nl.yestelecom.phoenix.batch.job.ciot.CiotProcess;
 import nl.yestelecom.phoenix.batch.job.creditcontrol.CreditControlProcess;
 import nl.yestelecom.phoenix.batch.job.jobstatus.JobStatus;
@@ -49,6 +50,9 @@ public class BatchJobRunner {
     @Autowired
     private FailedPortingRequestProcessor failedPortingRequestProcessor;
 
+    @Autowired
+    private C2yReportProcessor c2yReport;
+
     List<JobProcessor> jobs = new ArrayList<>();
 
     public void addJobs() {
@@ -58,6 +62,7 @@ public class BatchJobRunner {
         jobs.add(creditControlProcess);
         jobs.add(marketPointsProcess);
         jobs.add(failedPortingRequestProcessor);
+        jobs.add(c2yReport);
     }
 
     public List<JobProcessor> getJobs() {
@@ -103,6 +108,11 @@ public class BatchJobRunner {
 
     public void runVasRecon() {
         processJob(vasReconProcess);
+    }
+
+    @Scheduled(cron = "${c2yreport.job.runtime}")
+    public void generateC2yReport() {
+        processJob(c2yReport);
     }
 
     @Scheduled(cron = "${porting.job.runtime}")
