@@ -28,6 +28,8 @@ public class FileSender {
             LOG.info(fileName + " is transfered successfully to host.");
         } catch (final Exception e) {
             LOG.error("Exceptiomn is >> " + e);
+        } finally {
+            channelSftp.disconnect();
         }
     }
 
