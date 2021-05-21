@@ -25,6 +25,7 @@ public class FileSender {
         try {
             final File f = new File(fileName);
             channelSftp.put(new FileInputStream(f), f.getName());
+            channelSftp.sendSignal("KILL");
             LOG.info(fileName + " is transfered successfully to host.");
         } catch (final Exception e) {
             LOG.error("Exceptiomn is >> " + e);
