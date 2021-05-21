@@ -30,6 +30,7 @@ public class FileSender {
         } catch (final Exception e) {
             LOG.error("Exceptiomn is >> " + e);
         } finally {
+            channelSftp.exit();
             channelSftp.disconnect();
         }
     }
