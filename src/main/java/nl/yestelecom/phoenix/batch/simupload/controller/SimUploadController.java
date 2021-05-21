@@ -1,7 +1,6 @@
 package nl.yestelecom.phoenix.batch.simupload.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +19,7 @@ public class SimUploadController {
     SimLoadM2MService simLoadM2MService;
 
     @RequestMapping(value = "/loadSim", method = RequestMethod.GET)
-    @Scheduled(fixedDelay = 3_00_000)
+    // @Scheduled(fixedDelay = 3_00_000)
     public void getSimList() {
         simLoadService.processSimDetails();
     }
